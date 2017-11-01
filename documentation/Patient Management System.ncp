@@ -8,16 +8,17 @@
         <Name>Patient</Name>
         <Access>Public</Access>
         <Location left="35" top="292" />
-        <Size width="185" height="434" />
+        <Size width="188" height="451" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">public static final int NEW_ROW = -1</Member>
         <Member type="Field">private long id</Member>
         <Member type="Field">private String userName</Member>
         <Member type="Field">private String password</Member>
         <Member type="Field">private String fullName</Member>
         <Member type="Field">private int email</Member>
         <Member type="Field">private boolean active</Member>
+        <Member type="Constructor">public Patient()</Member>
         <Member type="Constructor">public Patient(long id)</Member>
+        <Member type="Constructor">public Patient(String userName, String password, boolean active)</Member>
         <Member type="Method">public long getId()</Member>
         <Member type="Method">public void setId(long id)</Member>
         <Member type="Method">public String getUserName()</Member>
@@ -70,29 +71,30 @@
       <Entity type="Interface">
         <Name>UserDao</Name>
         <Access>Public</Access>
-        <Location left="832" top="10" />
-        <Size width="195" height="216" />
+        <Location left="704" top="102" />
+        <Size width="271" height="216" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">long addUser(User user)</Member>
-        <Member type="Method">boolean updateUser(User user)</Member>
-        <Member type="Method">boolean deleteUser(User user)</Member>
-        <Member type="Method">User getUserById(long id)</Member>
-        <Member type="Method">List&lt;User&gt; getAllUser()</Member>
+        <Member type="Method">public long saveUser(User user)</Member>
+        <Member type="Method">public boolean updateUser(User user)</Member>
+        <Member type="Method">public boolean deleteUser(User user)</Member>
+        <Member type="Method">public User getUser(long id)</Member>
+        <Member type="Method">public User getUser(String name, String password)</Member>
       </Entity>
       <Entity type="Class">
         <Name>Doctor</Name>
         <Access>Public</Access>
         <Location left="449" top="304" />
-        <Size width="185" height="434" />
+        <Size width="184" height="451" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">public static final int NEW_ROW = -1</Member>
         <Member type="Field">private long id</Member>
         <Member type="Field">private String userName</Member>
         <Member type="Field">private String password</Member>
         <Member type="Field">private String fullName</Member>
         <Member type="Field">private int email</Member>
         <Member type="Field">private boolean active</Member>
+        <Member type="Constructor">public Doctor()</Member>
         <Member type="Constructor">public Doctor(long id)</Member>
+        <Member type="Constructor">public Doctor(String userName, String password, boolean active)</Member>
         <Member type="Method">public long getId()</Member>
         <Member type="Method">public void setId(long id)</Member>
         <Member type="Method">public String getUserName()</Member>
@@ -109,91 +111,84 @@
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>Schedule</Name>
+        <Name>Appointment</Name>
         <Access>Public</Access>
-        <Location left="1812" top="121" />
-        <Size width="213" height="417" />
+        <Location left="2257" top="437" />
+        <Size width="336" height="485" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">public static final int NEW_ROW = -1</Member>
         <Member type="Field">private long id</Member>
-        <Member type="Field">private User uDoctor</Member>
-        <Member type="Field">private User uPatient</Member>
-        <Member type="Field">private String appointment</Member>
+        <Member type="Field">private User doctor</Member>
+        <Member type="Field">private User patient</Member>
+        <Member type="Field">private Date time</Member>
         <Member type="Field">private String description</Member>
-        <Member type="Field">private String details</Member>
-        <Member type="Constructor">public Schedule(long id)</Member>
+        <Member type="Field">private List&lt;String&gt; notes</Member>
+        <Member type="Field">private long session</Member>
+        <Member type="Constructor">public Appointment()</Member>
+        <Member type="Constructor">public Appointment(long id)</Member>
+        <Member type="Constructor">public Appointment(User doctor, User patient, Date time)</Member>
         <Member type="Method">public void setId(long id)</Member>
         <Member type="Method">public long getId()</Member>
-        <Member type="Method">public void setDoctor(User user)</Member>
+        <Member type="Method">public void setDoctor(User doctor)</Member>
         <Member type="Method">public User getDoctor()</Member>
-        <Member type="Method">public void setPatient(User user)</Member>
+        <Member type="Method">public void setPatient(User patient)</Member>
         <Member type="Method">public User getPatient()</Member>
-        <Member type="Method">public void setAppointment(String time)</Member>
-        <Member type="Method">public void getAppointment()</Member>
+        <Member type="Method">public void setTime(Date time)</Member>
+        <Member type="Method">public Date getTimet()</Member>
         <Member type="Method">public void setDescripton(String text)</Member>
         <Member type="Method">public String getDescription()</Member>
-        <Member type="Method">public void setDetail(String detail)</Member>
-        <Member type="Method">public String getDetail()</Member>
+        <Member type="Method">public void setNotes(List&lt;String&gt; notes)</Member>
+        <Member type="Method">public List&lt;String&gt; getNotes()</Member>
+        <Member type="Method">public void setSidid(long id)</Member>
+        <Member type="Method">public long getSidid()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>ScheduleManager</Name>
+        <Name>DefaultScheduleManager</Name>
         <Access>Public</Access>
-        <Location left="1924" top="794" />
-        <Size width="497" height="230" />
+        <Location left="2680" top="586" />
+        <Size width="497" height="298" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">private ScheduleDao dao</Member>
-        <Member type="Constructor">public ScheduleManager()</Member>
-        <Member type="Method">public long add(Schedule schedule)</Member>
-        <Member type="Method">public boolean isEnableAppointment(User doctor, String appointment)</Member>
-        <Member type="Method">public boolean copyAppointmentOfDay(User doctor, String sourceDate, String targetDate)</Member>
-        <Member type="Method">public boolean remove(Schedule schedule)</Member>
-        <Member type="Method">public List&lt;Schedule&gt; getAppointmentsOfDoctor(Doctor doctor, String dateFrom, String dateTo)</Member>
-        <Member type="Method">public List&lt;Schedule&gt; getAppointmentsOfPatient(Patient patient, String dateFrom, String dateTo)</Member>
+        <Member type="Field">public static final int NEW_ROW = -1</Member>
+        <Member type="Field">private final AppointmentDao dao</Member>
+        <Member type="Field">private final SessionManager sessionManager</Member>
+        <Member type="Field">private final long rowId</Member>
+        <Member type="Constructor">public DefaultScheduleManager()</Member>
+        <Member type="Constructor">public DefaultScheduleManager(long rowId)</Member>
+        <Member type="Method">public long save(long id, long doctorId, long patientId, Date appointment, String description, List&lt;String&gt; notes)</Member>
+        <Member type="Method">private boolean isEnableAppointment(long userId, Date appointment)</Member>
+        <Member type="Method">public boolean reScheduleAppointment(long userId, Date srcDate, Date targetDate)</Member>
+        <Member type="Method">public boolean remove()</Member>
+        <Member type="Method">public boolean remove(long scheduleId)</Member>
+        <Member type="Method">public List&lt;Appointment&gt; getAppointments(long userId)</Member>
+        <Member type="Method">public List&lt;Appointment&gt; getAppointments(long userId, Date from, Date to)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Interface">
-        <Name>ScheduleDao</Name>
+        <Name>AppointmentDao</Name>
         <Access>Public</Access>
-        <Location left="2092" top="10" />
+        <Location left="2273" top="20" />
         <Size width="408" height="216" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">long addSchedule(Schedule schedule)</Member>
-        <Member type="Method">boolean updateSchedule(Schedule schedule)</Member>
-        <Member type="Method">boolean deleteSchedule(Schedule schedule)</Member>
-        <Member type="Method">Schedule getSchedule(long id)</Member>
-        <Member type="Method">public List&lt;Schedule&gt; getSchedules(User user, String dateFrom, String dateTo)</Member>
-      </Entity>
-      <Entity type="Class">
-        <Name>ScheduleDaoImpl</Name>
-        <Access>Public</Access>
-        <Location left="2344" top="335" />
-        <Size width="410" height="216" />
-        <Collapsed>False</Collapsed>
-        <Member type="Constructor">public ScheduleDaoImpl()</Member>
-        <Member type="Method">public long addSchedule(Schedule schedule)</Member>
-        <Member type="Method">public boolean updateSchedule(Schedule schedule)</Member>
-        <Member type="Method">public boolean deleteSchedule(Schedule schedule)</Member>
-        <Member type="Method">public Schedule getSchedule(long id)</Member>
-        <Member type="Method">public List&lt;Schedule&gt; getSchedules(User user, String dateFrom, String dateTo)</Member>
-        <Modifier>None</Modifier>
+        <Member type="Method">public long saveAppointment(Appointment appointment)</Member>
+        <Member type="Method">public boolean updateAppointment(Appointment appointment)</Member>
+        <Member type="Method">public boolean deleteAppointment(Appointment appointment)</Member>
+        <Member type="Method">public Appointment getAppointment(long id)</Member>
+        <Member type="Method">public List&lt;Appointment&gt; getAppointments(User user, Date dateFrom, Date dateTo)</Member>
       </Entity>
       <Entity type="Class">
         <Name>UserGroup</Name>
         <Access>Public</Access>
-        <Location left="1332" top="373" />
-        <Size width="229" height="315" />
+        <Location left="1803" top="53" />
+        <Size width="229" height="332" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">public static final int NEW_ROW = -1</Member>
         <Member type="Field">private long id</Member>
-        <Member type="Field">private String alias</Member>
         <Member type="Field">private String name</Member>
         <Member type="Field">private String note</Member>
+        <Member type="Constructor">public UserGroup()</Member>
         <Member type="Constructor">public UserGroup(long id)</Member>
+        <Member type="Constructor">public UserGroup(String name)</Member>
         <Member type="Method">public void setId(long id)</Member>
         <Member type="Method">public long getId()</Member>
-        <Member type="Method">public void setAlias(String alias)</Member>
-        <Member type="Method">public String getAlias()</Member>
         <Member type="Method">public void setName(String name)</Member>
         <Member type="Method">public String getName()</Member>
         <Member type="Method">public void setNote(String note)</Member>
@@ -203,79 +198,172 @@
       <Entity type="Interface">
         <Name>UserGroupDao</Name>
         <Access>Public</Access>
-        <Location left="1192" top="10" />
+        <Location left="1177" top="35" />
         <Size width="405" height="247" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">long addUserGroup(UserGroup group)</Member>
-        <Member type="Method">boolean updateUserGroup(UserGroup group)</Member>
-        <Member type="Method">boolean deleteUserGroup(UserGroup group)</Member>
-        <Member type="Method">UserGroup getUserGroup(long id)</Member>
-        <Member type="Method">long addUserGroupRelation(UserGroup group, User user)</Member>
-        <Member type="Method">boolean updateUserGroupRelation(UserGroupRelation relation)</Member>
-        <Member type="Method">boolean deleteUserGroupRelation(UserGroupRelation relation)</Member>
-        <Member type="Method">List&lt;User&gt; getAllUserFromGroup(UserGroup group)</Member>
-        <Member type="Method">List&lt;UserGroup&gt; getAllUserGroupByUser(User user)</Member>
-        <Member type="Method">boolean inGroup(User user, String groupAlias)</Member>
+        <Member type="Method">public long saveUserGroup(UserGroup group)</Member>
+        <Member type="Method">public UserGroup getUserGroup(long id)</Member>
+        <Member type="Method">public long saveUserGroupRelation(UserGroup group, User user)</Member>
+        <Member type="Method">public List&lt;User&gt; getAllUserFromGroup(UserGroup group)</Member>
+        <Member type="Method">public List&lt;UserGroup&gt; getAllUserGroupByUser(User user)</Member>
       </Entity>
       <Entity type="Class">
         <Name>UserGroupRelation</Name>
         <Access>Public</Access>
-        <Location left="1584" top="336" />
-        <Size width="221" height="264" />
+        <Location left="1985" top="101" />
+        <Size width="221" height="281" />
         <Collapsed>False</Collapsed>
-        <Member type="Field">public static final int NEW_ID = -1</Member>
+        <Member type="Field">private long id</Member>
         <Member type="Field">private UserGroup userGroup</Member>
         <Member type="Field">private User user</Member>
-        <Member type="Field">private String note</Member>
+        <Member type="Constructor">public UserGroupRelation()</Member>
         <Member type="Constructor">public UserGroupRelation(long id)</Member>
-        <Member type="Method">public void setUserGroup(UserGroup group)</Member>
+        <Member type="Constructor">public UserGroupRelation(User user, UserGroup group)</Member>
+        <Member type="Method">public void setId(long id)</Member>
+        <Member type="Method">public long getId()</Member>
+        <Member type="Method">public void setUserGroup(UserGroup userGroup)</Member>
         <Member type="Method">public UserGroup getUserGroup()</Member>
         <Member type="Method">public void setUser(User user)</Member>
         <Member type="Method">public User getUser()</Member>
-        <Member type="Method">public void setNote(String note)</Member>
-        <Member type="Method">public String getNote()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>ScheduleManager</Name>
+        <Access>Public</Access>
+        <Location left="2737" top="20" />
+        <Size width="583" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public long save(long doctorId, long patientId, Date appointment, String description, List&lt;String&gt; notes)</Member>
+        <Member type="Method">public boolean reScheduleAppointment(long userId, Date srcDate, Date targetDate)</Member>
+        <Member type="Method">public boolean remove(long scheduleId)</Member>
+        <Member type="Method">public List&lt;Appointment&gt; getAppointments(long userId)</Member>
+        <Member type="Method">public List&lt;Appointment&gt; getAppointments(long userId, Date from, Date to)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>DefaultUserManager</Name>
+        <Access>Public</Access>
+        <Location left="704" top="746" />
+        <Size width="528" height="230" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private final UserDao dao</Member>
+        <Member type="Field">public static final int NEW_ROW = -1</Member>
+        <Member type="Constructor">public DefaultUserManager()</Member>
+        <Member type="Method">public long createUser(String name, String password, boolean active)</Member>
+        <Member type="Method">public long createUser(String name, String password, boolean active, String fullname, String email)</Member>
+        <Member type="Method">public boolean updateUser(long userId, Sring name, String password, boolean active, String fullname, String email)</Member>
+        <Member type="Method">public boolean removeUser(long userId)</Member>
+        <Member type="Method">public User getUser(long id)</Member>
+        <Member type="Method">public User getUser(String name, String password)</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>UserDaoImpl</Name>
+        <Name>DefaultUserGroupManager</Name>
         <Access>Public</Access>
-        <Location left="792" top="278" />
-        <Size width="200" height="216" />
+        <Location left="1322" top="746" />
+        <Size width="515" height="230" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">public long addUser(User user)</Member>
-        <Member type="Method">public boolean updateUser(User user)</Member>
-        <Member type="Method">public boolean deleteUser(User user)</Member>
-        <Member type="Method">public User getUserById(long id)</Member>
-        <Member type="Method">public List&lt;User&gt; getAllUser()</Member>
+        <Member type="Field">private final UserGroupDao dao</Member>
+        <Member type="Field">public static final int NEW_ROW = -1</Member>
+        <Member type="Constructor">public DefaultUserGroupManager()</Member>
+        <Member type="Method">public long createGroup(String name)</Member>
+        <Member type="Method">public long createGroup(String name, String note)</Member>
+        <Member type="Method">public UserGroup getGroup(long id)</Member>
+        <Member type="Method">public long saveRelation(long userId, long groupId)</Member>
+        <Member type="Method">public List&lt;UserGroup&gt; getGroupOfUser(long userId)</Member>
+        <Member type="Method">public List&lt;User&gt; getUsersFromGroup(long groupId)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Interface">
+        <Name>UserManager</Name>
+        <Access>Public</Access>
+        <Location left="885" top="369" />
+        <Size width="452" height="233" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public long createUser(String name, String password, boolean active)</Member>
+        <Member type="Method">public long createUser(String name, String password, boolean active, String fullname, String email)</Member>
+        <Member type="Method">public boolean updateUser(long userId, String name, String password, boolean active, String fullname, String email)</Member>
+        <Member type="Method">public boolean removeUser(long userId)</Member>
+        <Member type="Method">public User getUser(long id)</Member>
+        <Member type="Method">public User getUser(String name, String password)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>UserGroupManager</Name>
+        <Access>Public</Access>
+        <Location left="1513" top="388" />
+        <Size width="541" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public long createGroup(String name)</Member>
+        <Member type="Method">public long createGroup(String name, String note)</Member>
+        <Member type="Method">public UserGroup getGroup(long id)</Member>
+        <Member type="Method">public long saveRelation(long userId, long groupId)</Member>
+        <Member type="Method">public List&lt;UserGroup&gt; getGroupOfUser(long userId)</Member>
+        <Member type="Method">public List&lt;User&gt; getUsersFromGroup(long groupId)</Member>
+      </Entity>
+      <Entity type="Interface">
+        <Name>SessionDao</Name>
+        <Access>Public</Access>
+        <Location left="199" top="1151" />
+        <Size width="307" height="174" />
+        <Collapsed>False</Collapsed>
+        <Member type="Method">public long saveSession(Session session)</Member>
+        <Member type="Method">public boolean updateSession(Session session)</Member>
+        <Member type="Method">public Session getSession(long sessionId)</Member>
+      </Entity>
+      <Entity type="Class">
+        <Name>Session</Name>
+        <Access>Public</Access>
+        <Location left="133" top="1402" />
+        <Size width="334" height="434" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private long id</Member>
+        <Member type="Field">private long userId</Member>
+        <Member type="Field">private String ip</Member>
+        <Member type="Field">private String userAgent</Member>
+        <Member type="Field">private boolean disable</Member>
+        <Member type="Constructor">public Session()</Member>
+        <Member type="Constructor">public Session(long id)</Member>
+        <Member type="Constructor">public Session(long userId, String ip)</Member>
+        <Member type="Method">public void setId(long id)</Member>
+        <Member type="Method">public long getId()</Member>
+        <Member type="Method">public void setUserId(long userId)</Member>
+        <Member type="Method">public long getUserId()</Member>
+        <Member type="Method">public void setIp(String ip)</Member>
+        <Member type="Method">public String getIp()</Member>
+        <Member type="Method">public void setUserAgent(String userAgent)</Member>
+        <Member type="Method">public String getUserAgent()</Member>
+        <Member type="Method">public void setDisabled(boolean disabled)</Member>
+        <Member type="Method">public boolean isDisabled()</Member>
         <Modifier>None</Modifier>
       </Entity>
       <Entity type="Class">
-        <Name>UserGroupDaoImpl</Name>
+        <Name>DefaultSessionManager</Name>
         <Access>Public</Access>
-        <Location left="1071" top="263" />
-        <Size width="212" height="247" />
+        <Location left="575" top="1467" />
+        <Size width="559" height="264" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">public long addUserGroup(UserGroup group)</Member>
-        <Member type="Method">public boolean updateUserGroup(UserGroup group)</Member>
-        <Member type="Method">public boolean deleteUserGroup(UserGroup group)</Member>
-        <Member type="Method">public UserGroup getUserGroup(long id)</Member>
-        <Member type="Method">public long addUserGroupRelation(UserGroup group, User user)</Member>
-        <Member type="Method">public UserGroupRelation updateUserGroupRelation(UserGroupRelation relation)</Member>
-        <Member type="Method">public UserGroupRelation deleteUserGroupRelation(UserGroupRelation relation)</Member>
-        <Member type="Method">public List&lt;User&gt; getAllUserFromGroup(UserGroup group)</Member>
-        <Member type="Method">public List&lt;UserGroup&gt; getAllUserGroupByUser(User user)</Member>
-        <Member type="Method">public boolean inGroup(User user, String groupAlias)</Member>
+        <Member type="Field">private static SessionManager instance</Member>
+        <Member type="Field">private final SessionDao dao</Member>
+        <Member type="Field">private Session currentSession</Member>
+        <Member type="Constructor">private DefaultSessionManager()</Member>
+        <Member type="Method">public static final SessionManager getInstance()</Member>
+        <Member type="Method">public boolean createSession(long userId, String ip)</Member>
+        <Member type="Method">public boolean createSession(long userId, String ip, String userAgent)</Member>
+        <Member type="Method">public Session getSession()</Member>
+        <Member type="Method">public boolean isEnabled()</Member>
+        <Member type="Method">public boolean destroy()</Member>
         <Modifier>None</Modifier>
       </Entity>
-      <Entity type="Class">
-        <Name>UserDaoProduce</Name>
+      <Entity type="Interface">
+        <Name>SessionManager</Name>
         <Access>Public</Access>
-        <Location left="792" top="698" />
-        <Size width="254" height="216" />
+        <Location left="675" top="1151" />
+        <Size width="441" height="216" />
         <Collapsed>False</Collapsed>
-        <Member type="Method">public static UserDao getUserDao()</Member>
-        <Member type="Method">public static UserGroupDao getGroupDao()</Member>
-        <Modifier>Abstract</Modifier>
+        <Member type="Method">public boolean createSession(long userId, String ip)</Member>
+        <Member type="Method">public boolean createSession(long userId, String ip, String userAgent)</Member>
+        <Member type="Method">public Session getSession()</Member>
+        <Member type="Method">public boolean isEnabled()</Member>
+        <Member type="Method">public boolean destroy()</Member>
       </Entity>
     </Entities>
     <Relationships>
@@ -309,48 +397,31 @@
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
-      <Relationship type="Realization" first="8" second="7">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
       <Relationship type="Dependency" first="7" second="5">
         <Label>
         </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
-      <Relationship type="Dependency" first="9" second="10">
+      <Relationship type="Dependency" first="8" second="9">
         <Label>
         </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
-      <Relationship type="Dependency" first="10" second="1">
+      <Relationship type="Dependency" first="9" second="1">
         <Label>
         </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
-      <Relationship type="Dependency" first="11" second="10">
+      <Relationship type="Dependency" first="10" second="9">
         <Label>
         </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
-      <Relationship type="Association" first="6" second="5">
-        <Label>use</Label>
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-        <Direction>Unidirectional</Direction>
-        <AssociationType>Aggregation</AssociationType>
-        <StartMultiplicity>1</StartMultiplicity>
-        <EndMultiplicity>1..*</EndMultiplicity>
-      </Relationship>
-      <Relationship type="Dependency" first="6" second="1">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
-      <Relationship type="Association" first="6" second="7">
+      <Relationship type="Association" first="7" second="6">
         <Label>create</Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
@@ -359,41 +430,59 @@
         <StartMultiplicity>1</StartMultiplicity>
         <EndMultiplicity>1</EndMultiplicity>
       </Relationship>
-      <Relationship type="Dependency" first="6" second="4">
-        <Label>
-        </Label>
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-      </Relationship>
-      <Relationship type="Dependency" first="6" second="0">
-        <Label>
-        </Label>
-        <StartOrientation>Horizontal</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-      </Relationship>
-      <Relationship type="Realization" first="12" second="3">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Vertical</EndOrientation>
-      </Relationship>
-      <Relationship type="Realization" first="13" second="10">
-        <StartOrientation>Vertical</StartOrientation>
-        <EndOrientation>Horizontal</EndOrientation>
-      </Relationship>
-      <Relationship type="Association" first="14" second="12">
+      <Relationship type="Association" first="12" second="3">
         <Label>create</Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
-        <AssociationType>Aggregation</AssociationType>
+        <AssociationType>Composition</AssociationType>
         <StartMultiplicity>1</StartMultiplicity>
         <EndMultiplicity>1</EndMultiplicity>
       </Relationship>
-      <Relationship type="Association" first="14" second="13">
+      <Relationship type="Association" first="13" second="9">
         <Label>create</Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
         <Direction>Unidirectional</Direction>
-        <AssociationType>Aggregation</AssociationType>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Realization" first="12" second="14">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="6" second="11">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="13" second="15">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Dependency" first="16" second="17">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Realization" first="18" second="19">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+      <Relationship type="Association" first="18" second="16">
+        <Label>create</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
+        <StartMultiplicity>1</StartMultiplicity>
+        <EndMultiplicity>1</EndMultiplicity>
+      </Relationship>
+      <Relationship type="Association" first="19" second="6">
+        <Label>create</Label>
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+        <Direction>Unidirectional</Direction>
+        <AssociationType>Composition</AssociationType>
         <StartMultiplicity>1</StartMultiplicity>
         <EndMultiplicity>1</EndMultiplicity>
       </Relationship>
