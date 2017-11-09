@@ -1,4 +1,4 @@
-package hu.kuncystem.patient.sevicelayer.user;
+package hu.kuncystem.patient.servicelayer.user;
 
 import java.util.List;
 

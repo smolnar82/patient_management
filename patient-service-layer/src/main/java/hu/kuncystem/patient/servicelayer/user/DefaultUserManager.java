@@ -1,4 +1,4 @@
-package hu.kuncystem.patient.sevicelayer.user;
+package hu.kuncystem.patient.servicelayer.user;
 
 import hu.kuncystem.patient.dao.user.UserDao;
 import hu.kuncystem.patient.pojo.user.User;
