@@ -12,14 +12,7 @@ import hu.kuncystem.patient.pojo.user.User;
  *  
  * @version 1.0
  */
-public interface UserDao {
-	 /**
-	 * This is the method to be used to initialize database resources ie. connection.
-	 *
-	 * @param ds The DataSource objects are the preferred means of getting a connection to a data source.
-	 */
-	public void setDataSource(DataSource ds);
-	
+public interface UserDao {	
 	/**
 	 * Insert new user into the database.
 	 *
@@ -55,8 +48,8 @@ public interface UserDao {
 	/**
 	 * Get one row from the database. Both parameters together identify one user in the database.
 	 *
-	 * @param name This is the user’s name.
-	 * @param password This is the user’s password.
+	 * @param name This is the userï¿½s name.
+	 * @param password This is the userï¿½s password.
 	 * @return Object.User is a simple POJO object.
 	 */
 	public User getUser(String name, String password);

@@ -1,6 +1,4 @@
-package hu.kuncystem.patient.servicelayer.user;
-
-import hu.kuncystem.patient.pojo.user.User;
+package hu.kuncystem.patient.pojo.user;
 
 /**
  * @author Csaba Kun <kuncy88@gmail.com>
@@ -27,7 +25,12 @@ public class UserFactory {
 	 * @param type The type of object which we want to create. For the value we can use the static variables of class, too: UserFactory.DOCTOR or UserFactory.PATIENT
 	 * @return An instance of Doctor or Patient model class
 	 */
-	public User getUser(String type) {
+	public static User getUser(String type) {
+		if(type.equalsIgnoreCase(PATIENT)){
+			return new Patient();
+		}else if(type.equalsIgnoreCase(DOCTOR)){
+			return new Doctor();
+		}
 		return null;
 	}
 
