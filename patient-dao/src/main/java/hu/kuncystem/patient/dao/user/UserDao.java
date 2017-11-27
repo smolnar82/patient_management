@@ -1,7 +1,5 @@
 package hu.kuncystem.patient.dao.user;
 
-import javax.sql.DataSource;
-
 import hu.kuncystem.patient.pojo.user.User;
 
 /**
@@ -19,7 +17,7 @@ public interface UserDao {
 	 * @param user Object.User is a simple POJO object(Patient or Doctor model object).
 	 * @return This is new row id.
 	 */
-	public long saveUser(User user);
+	public User saveUser(User user);
 
 	/**
 	 * Update one row in the database.
@@ -48,8 +46,8 @@ public interface UserDao {
 	/**
 	 * Get one row from the database. Both parameters together identify one user in the database.
 	 *
-	 * @param name This is the user�s name.
-	 * @param password This is the user�s password.
+	 * @param name This is the user's name.
+	 * @param password This is the user's password.
 	 * @return Object.User is a simple POJO object.
 	 */
 	public User getUser(String name, String password);

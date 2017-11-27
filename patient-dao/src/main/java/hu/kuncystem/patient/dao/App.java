@@ -3,8 +3,10 @@ package hu.kuncystem.patient.dao;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import hu.kuncystem.patient.dao.user.UserDao;
+import hu.kuncystem.patient.dao.user.UserGroupDao;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserFactory;
+import hu.kuncystem.patient.pojo.user.UserGroup;
 
 /**
  * this for comment of classes
@@ -22,20 +24,14 @@ public class App {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(Config.class);
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigH2.class);
 		
-		UserDao dao = ctx.getBean(UserDao.class);
+		UserFactory factory = new UserFactory();
 		
-		User u1 = UserFactory.getUser(UserFactory.PATIENT);
-		u1.setUserName("teszt");
-		u1.setPassword("abcd12345");
-		u1.setEmail("teszt@domain.com");
-		u1.setFullname("Teszt Elek");
+		User user = factory.getUser(UserFactory.DOCTOR);
 		
-		long newId = dao.saveUser(u1);
-		System.out.println(newId + "");
-		
-		u1 = dao.getUser(newId);
-		System.out.println(u1.getUserName() + " " + u1.getPassword() + " " + u1.getEmail() + " " + u1.getFullname() + " " + u1.isActive());
+		if(factory.isDoctor(user)){
+			System.out.println("doctor vagyok");
+		}
 	}
 }

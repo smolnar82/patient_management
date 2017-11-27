@@ -13,8 +13,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import hu.kuncystem.patient.pojo.user.Patient;
 import hu.kuncystem.patient.pojo.user.User;
+import hu.kuncystem.patient.pojo.user.UserFactory;
 
 /**
  * Create a JDBC dao object which defines standard operations on a data source. This data source belong to data of user.
@@ -30,10 +30,27 @@ public class JDBCUserDao implements UserDao {
 	@Autowired
 	private JdbcOperations jdbc;
 	
-	private static final String SQL_FIND_BY_ID = "SELECT * FROM users WHERE id = ?;";
+	private static final String SQL_FIND_BY_ID = "SELECT "
+		+ "u.*, COALESCE(ug.name,'') AS group_name "
+	+ "FROM users u "
+	+ "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
+	+ "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
+	+ "WHERE u.id = ?;";
+	
+	private static final String SQL_FIND = "SELECT "
+		+ "u.*, COALESCE(ug.name,'') AS group_name "
+	+ "FROM users u "
+	+ "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
+	+ "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
+	+ "WHERE u.user_name = ? AND u.passw = ?;";
+	
 	private static final String SQL_INSERT = "INSERT INTO users (user_name, passw, fullname, email) VALUES (?, ?, ?, ?);";
 	
-	public long saveUser(final User user) {
+	private static final String SQL_UPDATE = "UPDATE users SET user_name = ?, passw = ?, fullname = ?, email = ?, active = ? WHERE id = ?;";
+		
+	private static final String SQL_DELETE = "DELETE FROM users WHERE id = ?;";
+	
+	public User saveUser(final User user) {
 		KeyHolder holder = new GeneratedKeyHolder();
 		
 		int rows = jdbc.update(new PreparedStatementCreator() {
@@ -51,19 +68,20 @@ public class JDBCUserDao implements UserDao {
 		}, holder);
 		//if the operations was successed
 		if(rows == 1){
-			return (Integer)holder.getKey();
+			user.setId(holder.getKey().longValue());
+			return user;
 		}
-		return 0;
+		return null;
 	}
 
 	public boolean updateUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		int num = jdbc.update(SQL_UPDATE, user.getUserName(), user.getPassword(), user.getFullname(), user.getEmail(), user.isActive(), user.getId());
+		return (num > 0) ? true : false;
 	}
 
 	public boolean deleteUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		int num = jdbc.update(SQL_DELETE, user.getId());
+		return (num > 0) ? true : false;
 	}
 
 	public User getUser(long id) {
@@ -71,8 +89,7 @@ public class JDBCUserDao implements UserDao {
 	}
 
 	public User getUser(String name, String password) {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
 	}
 	
 	private class UserRowMapper implements RowMapper<User>{
@@ -81,7 +98,14 @@ public class JDBCUserDao implements UserDao {
 		 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
 		 */
 		public User mapRow(ResultSet rs, int row) throws SQLException {
-			User u = new Patient(rs.getString("user_name"), rs.getString("passw"), rs.getBoolean("active"));
+			UserFactory userFactory = new UserFactory();
+			
+			//get an object of User by group name
+			User u = userFactory.getUser(rs.getString("group_name").toUpperCase());
+			
+			u.setUserName(rs.getString("user_name"));
+			u.setPassword(rs.getString("passw"));
+			u.setActive(rs.getBoolean("active"));
 			u.setId(rs.getInt("id"));
 			u.setEmail(rs.getString("email"));
 			u.setFullname(rs.getString("fullname"));

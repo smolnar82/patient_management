@@ -2,8 +2,6 @@ package hu.kuncystem.patient.dao.user;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserGroup;
 
@@ -16,13 +14,6 @@ import hu.kuncystem.patient.pojo.user.UserGroup;
  * @version 1.0
  */
 public interface UserGroupDao {
-	 /**
-	 * This is the method to be used to initialize database resources ie. connection.
-	 *
-	 * @param ds The DataSource objects are the preferred means of getting a connection to a data source.
-	 */
-	public void setDataSource(DataSource ds);
-	
 	/**
 	 * Insert new user group into the database.
 	 *
@@ -46,7 +37,7 @@ public interface UserGroupDao {
 	 * @param user Object.User is a simple POJO object. This user who will insert into the group.
 	 * @return It will return true for success otherwise it will return false.
 	 */
-	public long saveUserGroupRelation(UserGroup group, User user);
+	public boolean saveUserGroupRelation(UserGroup group, User user);
 
 	/**
 	 * Return all users who are in this group.

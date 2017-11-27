@@ -19,12 +19,15 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
  * @version 1.0
  */
 @Configuration
-@ComponentScan
-public class Config {
+@ComponentScan(basePackages = {"hu.kuncystem.patient.dao"})
+public class ConfigH2 {
 
 	@Bean
 	public DataSource dataSource(){
-		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("schema.sql").build();
+		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
+				.addScript("schema.sql")
+				.addScript("sql_data.sql")
+				.build();
 	}
 	
 	@Bean

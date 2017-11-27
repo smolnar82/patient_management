@@ -10,14 +10,8 @@ public class UserFactory {
 	public static final String DOCTOR = "DOCTOR";
 	
 	public static final String PATIENT = "PATIENT";
-
-	/**
-	 * This class create new instance from User or Doctor Model class without exposing the creation logic to the client.
-	 *
-	 */
-	public UserFactory() {
-		
-	}
+	
+	public static final String DEFAULT = "";
 
 	/**
 	 * Create new model object from Doctor or Patient class. 
@@ -25,13 +19,18 @@ public class UserFactory {
 	 * @param type The type of object which we want to create. For the value we can use the static variables of class, too: UserFactory.DOCTOR or UserFactory.PATIENT
 	 * @return An instance of Doctor or Patient model class
 	 */
-	public static User getUser(String type) {
-		if(type.equalsIgnoreCase(PATIENT)){
-			return new Patient();
-		}else if(type.equalsIgnoreCase(DOCTOR)){
-			return new Doctor();
+	public User getUser(String type) {
+		if(type == null){
+			return null;
+		}else{
+			if(type.equalsIgnoreCase(PATIENT)){
+				return new Patient();
+			}else if(type.equalsIgnoreCase(DOCTOR)){
+				return new Doctor();
+			}else{
+				return new DefaultUser();
+			}
 		}
-		return null;
 	}
 
 	/**
@@ -40,8 +39,8 @@ public class UserFactory {
 	 * @param user Object.User model class is a simple POJO object.
 	 * @return If the user is a patient then return true otherwise it will be false.
 	 */
-	public static boolean isPatient(User user) {
-		return false;
+	public boolean isPatient(User user) {
+		return user.getType().getSimpleName().toUpperCase().equalsIgnoreCase(PATIENT);
 		
 	}
 
@@ -51,8 +50,8 @@ public class UserFactory {
 	 * @param user Object.User model class is a simple POJO object.
 	 * @return If the user is a doctor then return true otherwise it will be false.
 	 */
-	public static boolean isDoctor(User user) {
-		return false;
+	public boolean isDoctor(User user) {
+		return user.getType().getSimpleName().toUpperCase().equalsIgnoreCase(DOCTOR);
 		
 	}
 }

@@ -40,7 +40,7 @@ public class DefaultScheduleManager implements ScheduleManager {
 	/**
 	 * This class manages scheduling processes. Through the object we can add new appointment, change and check the appointment time that can be inserted under different conditions.
 	 *
-	 * @param rowId Identification of one appointment. If the value is -1 then it means that the set data will be a new data. This isn’t in database, yet.
+	 * @param rowId Identification of one appointment. If the value is -1 then it means that the set data will be a new data. This isnï¿½t in database, yet.
 	 */
 	public DefaultScheduleManager(long rowId) {
 		this.dao = null;
