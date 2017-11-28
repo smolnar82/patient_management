@@ -1,12 +1,6 @@
 package hu.kuncystem.patient.dao;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import hu.kuncystem.patient.dao.user.UserDao;
-import hu.kuncystem.patient.dao.user.UserGroupDao;
-import hu.kuncystem.patient.pojo.user.User;
-import hu.kuncystem.patient.pojo.user.UserFactory;
-import hu.kuncystem.patient.pojo.user.UserGroup;
+//import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * this for comment of classes
@@ -24,14 +18,6 @@ public class App {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigH2.class);
-		
-		UserFactory factory = new UserFactory();
-		
-		User user = factory.getUser(UserFactory.DOCTOR);
-		
-		if(factory.isDoctor(user)){
-			System.out.println("doctor vagyok");
-		}
+		//AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(ConfigH2.class);
 	}
 }

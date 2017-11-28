@@ -42,14 +42,14 @@ public class Session {
 	 * @param ip Ip address of user.
 	 */
 	public Session(long userId, String ip) {
-		setId(userId);
+		setUserId(userId);
 		setIp(ip);
 	}
 
 	/**
 	 * Set new identification.
 	 * 
-	 * @param id Identification of one session. If the value is -1 then it means that the set data will be a new data. This isn’t in database, yet.
+	 * @param id Identification of one session. If the value is -1 then it means that the set data will be a new data. This isnï¿½t in database, yet.
 	 */
 	public void setId(long id) {
 		this.id = id;

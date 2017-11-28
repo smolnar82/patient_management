@@ -1,7 +1,5 @@
 package hu.kuncystem.patient.dao.session;
 
-import javax.sql.DataSource;
-
 import hu.kuncystem.patient.pojo.session.Session;
 
 /**
@@ -12,21 +10,14 @@ import hu.kuncystem.patient.pojo.session.Session;
  *  
  * @version 1.0
  */
-public interface SessionDao {
-	 /**
-	 * This is the method to be used to initialize database resources ie. connection.
-	 *
-	 * @param ds The DataSource objects are the preferred means of getting a connection to a data source.
-	 */
-	public void setDataSource(DataSource ds);
-		
+public interface SessionDao {		
 	/**
 	 * Insert new data of the session into the database.
 	 *
 	 * @param session Object.Session is a simple POJO object.
-	 * @return This is a new row id.
+	 * @return This is a new Session POJO object.
 	 */
-	public long saveSession(Session session);
+	public Session saveSession(Session session);
 
 	/**
 	 * Update one row in the database.

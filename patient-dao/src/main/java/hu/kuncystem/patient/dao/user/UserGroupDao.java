@@ -20,7 +20,7 @@ public interface UserGroupDao {
 	 * @param group Object.User is a simple POJO object.
 	 * @return This is new row id.
 	 */
-	public long saveUserGroup(UserGroup group);
+	public UserGroup saveUserGroup(UserGroup group);
 
 	/**
 	 * Get a row from the database by id.

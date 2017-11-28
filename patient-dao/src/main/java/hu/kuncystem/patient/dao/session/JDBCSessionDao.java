@@ -1,6 +1,17 @@
 package hu.kuncystem.patient.dao.session;
 
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import hu.kuncystem.patient.pojo.session.Session;
 
@@ -12,30 +23,64 @@ import hu.kuncystem.patient.pojo.session.Session;
  *  
  * @version 1.0
  */
+@Repository
 public class JDBCSessionDao implements SessionDao {
-	private DataSource dataSource;
-	   
-	/* (non-Javadoc)
-	 * @see hu.kuncystem.patient.dao.session.SessionDao#setDataSource(javax.sql.DataSource)
-	 */
-	public void setDataSource(DataSource ds) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	public long saveSession(Session session) {
-		// TODO Auto-generated method stub
-		return 0;
+	@Autowired
+	private JdbcOperations jdbc;
+	
+	private static final String SQL_INSERT = "INSERT INTO session_list (user_id, ip, user_agent, disabled) VALUES (?, ?, ?, ?);";
+	
+	private static final String SQL_UPDATE = "UPDATE public.session_list SET user_id = ?, ip = ?, user_agent = ?, disabled = ? WHERE id = ?;";
+	
+	private static final String SQL_FIND_BY_ID = "SELECT * FROM session_list WHERE id = ?;";
+	
+	public Session saveSession(final Session session) {
+		KeyHolder holder = new GeneratedKeyHolder();
+		
+		int rows = jdbc.update(new PreparedStatementCreator() {
+			
+			public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+				PreparedStatement ps = conn.prepareStatement(SQL_INSERT, new String[]{"id"});
+				
+				ps.setLong(1, session.getUserId());
+				ps.setString(2, session.getIp());
+				ps.setString(3, session.getUserAgent());
+				ps.setBoolean(4, session.isDisabled());
+				
+				return ps;
+			}
+		}, holder);
+		//if the operations was successed
+		if(rows == 1){
+			session.setId(holder.getKey().longValue());
+			return session;
+		}
+		return null;
 	}
 
 	public boolean updateSession(Session session) {
-		// TODO Auto-generated method stub
-		return false;
+		int num = jdbc.update(SQL_UPDATE, session.getUserId(), session.getIp(), session.getUserAgent(), session.isDisabled(), session.getId());
+		return (num > 0) ? true : false;
 	}
 
 	public Session getSession(long sessionId) {
-		// TODO Auto-generated method stub
-		return null;
+		return jdbc.queryForObject(SQL_FIND_BY_ID, new SessionRowMapper(), sessionId);
+	}
+	
+	public static class SessionRowMapper implements RowMapper<Session>{
+		/* (non-Javadoc)
+		 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
+		 */
+		public Session mapRow(ResultSet rs, int row) throws SQLException {			
+			
+			Session s = new Session(rs.getLong("user_id"), rs.getString("ip"));
+			s.setUserAgent(rs.getString("user_agent"));
+			s.setDisabled(rs.getBoolean("disabled"));
+			
+			return s;
+		}
+		
 	}
 
 }

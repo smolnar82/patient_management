@@ -92,14 +92,12 @@ public class JDBCUserDao implements UserDao {
 		return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
 	}
 	
-	private class UserRowMapper implements RowMapper<User>{
-
+	public static class UserRowMapper implements RowMapper<User>{
+		private final UserFactory userFactory = new UserFactory();
 		/* (non-Javadoc)
 		 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
 		 */
-		public User mapRow(ResultSet rs, int row) throws SQLException {
-			UserFactory userFactory = new UserFactory();
-			
+		public User mapRow(ResultSet rs, int row) throws SQLException {			
 			//get an object of User by group name
 			User u = userFactory.getUser(rs.getString("group_name").toUpperCase());
 			
