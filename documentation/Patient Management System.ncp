@@ -74,6 +74,7 @@
         <Location left="704" top="102" />
         <Size width="271" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void setDataSource(DataSource ds)</Member>
         <Member type="Method">public long saveUser(User user)</Member>
         <Member type="Method">public boolean updateUser(User user)</Member>
         <Member type="Method">public boolean deleteUser(User user)</Member>
@@ -154,7 +155,7 @@
         <Member type="Field">private final long rowId</Member>
         <Member type="Constructor">public DefaultScheduleManager()</Member>
         <Member type="Constructor">public DefaultScheduleManager(long rowId)</Member>
-        <Member type="Method">public long save(long id, long doctorId, long patientId, Date appointment, String description, List&lt;String&gt; notes)</Member>
+        <Member type="Method">public long save(long doctorId, long patientId, Date appointment, String description, List&lt;String&gt; notes)</Member>
         <Member type="Method">private boolean isEnableAppointment(long userId, Date appointment)</Member>
         <Member type="Method">public boolean reScheduleAppointment(long userId, Date srcDate, Date targetDate)</Member>
         <Member type="Method">public boolean remove()</Member>
@@ -169,6 +170,7 @@
         <Location left="2273" top="20" />
         <Size width="408" height="216" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void setDataSource(DataSource ds)</Member>
         <Member type="Method">public long saveAppointment(Appointment appointment)</Member>
         <Member type="Method">public boolean updateAppointment(Appointment appointment)</Member>
         <Member type="Method">public boolean deleteAppointment(Appointment appointment)</Member>
@@ -201,11 +203,13 @@
         <Location left="1177" top="35" />
         <Size width="405" height="247" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void setDataSource(DataSource ds)</Member>
         <Member type="Method">public long saveUserGroup(UserGroup group)</Member>
         <Member type="Method">public UserGroup getUserGroup(long id)</Member>
         <Member type="Method">public long saveUserGroupRelation(UserGroup group, User user)</Member>
         <Member type="Method">public List&lt;User&gt; getAllUserFromGroup(UserGroup group)</Member>
         <Member type="Method">public List&lt;UserGroup&gt; getAllUserGroupByUser(User user)</Member>
+        <Member type="Method">void newMethod()</Member>
       </Entity>
       <Entity type="Class">
         <Name>UserGroupRelation</Name>
@@ -302,9 +306,10 @@
       <Entity type="Interface">
         <Name>SessionDao</Name>
         <Access>Public</Access>
-        <Location left="199" top="1151" />
+        <Location left="198" top="1151" />
         <Size width="307" height="174" />
         <Collapsed>False</Collapsed>
+        <Member type="Method">void setDataSource(DataSource ds)</Member>
         <Member type="Method">public long saveSession(Session session)</Member>
         <Member type="Method">public boolean updateSession(Session session)</Member>
         <Member type="Method">public Session getSession(long sessionId)</Member>
@@ -394,30 +399,24 @@
         <EndMultiplicity>0..*</EndMultiplicity>
       </Relationship>
       <Relationship type="Dependency" first="3" second="1">
+        <Label>
+        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="7" second="5">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="8" second="9">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="9" second="1">
-        <Label>
-        </Label>
         <StartOrientation>Horizontal</StartOrientation>
         <EndOrientation>Horizontal</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="10" second="9">
-        <Label>
-        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
@@ -461,6 +460,8 @@
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
       <Relationship type="Dependency" first="16" second="17">
+        <Label>
+        </Label>
         <StartOrientation>Vertical</StartOrientation>
         <EndOrientation>Vertical</EndOrientation>
       </Relationship>
