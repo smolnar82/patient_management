@@ -68,6 +68,7 @@ public class Appointment {
     public Appointment(User doctor, User patient, Date time) {
         setDoctor(doctor);
         setPatient(patient);
+        setTime(time);
     }
 
     /**
@@ -146,7 +147,7 @@ public class Appointment {
      * 
      * @param id
      *            Identification of one appointment. If the value is -1 then it
-     *            means that the set data will be a new data. This isn�t in
+     *            means that the set data will be a new data. This isn't in
      *            database, yet.
      */
     public void setId(long id) {
