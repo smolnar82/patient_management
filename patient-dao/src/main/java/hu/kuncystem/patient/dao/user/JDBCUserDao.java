@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -74,34 +75,53 @@ public class JDBCUserDao implements UserDao {
     private JdbcOperations jdbc;
 
     public boolean deleteUser(User user) {
-        int num = jdbc.update(SQL_DELETE, user.getId());
-        return (num > 0) ? true : false;
+        try {
+            int num = jdbc.update(SQL_DELETE, user.getId());
+            return (num > 0) ? true : false;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public User getUser(long id) {
-        return jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+        try {
+            return jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public User getUser(String name, String password) {
-        return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+        try {
+            return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public User saveUser(final User user) {
         KeyHolder holder = new GeneratedKeyHolder();
+        int rows = 0;
+        try {
+            rows = jdbc.update(new PreparedStatementCreator() {
 
-        int rows = jdbc.update(new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                    PreparedStatement ps = conn.prepareStatement(SQL_INSERT, new String[] { "id" });
 
-            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                PreparedStatement ps = conn.prepareStatement(SQL_INSERT, new String[] { "id" });
+                    ps.setString(1, user.getUserName());
+                    ps.setString(2, user.getPassword());
+                    ps.setString(3, user.getFullname());
+                    ps.setString(4, user.getEmail());
 
-                ps.setString(1, user.getUserName());
-                ps.setString(2, user.getPassword());
-                ps.setString(3, user.getFullname());
-                ps.setString(4, user.getEmail());
-
-                return ps;
-            }
-        }, holder);
+                    return ps;
+                }
+            }, holder);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
         // if the operations was successed
         if (rows == 1) {
             user.setId(holder.getKey().longValue());
@@ -111,8 +131,13 @@ public class JDBCUserDao implements UserDao {
     }
 
     public boolean updateUser(User user) {
-        int num = jdbc.update(SQL_UPDATE, user.getUserName(), user.getPassword(), user.getFullname(), user.getEmail(),
-                user.isActive(), user.getId());
-        return (num > 0) ? true : false;
+        try {
+            int num = jdbc.update(SQL_UPDATE, user.getUserName(), user.getPassword(), user.getFullname(),
+                    user.getEmail(), user.isActive(), user.getId());
+            return (num > 0) ? true : false;
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
