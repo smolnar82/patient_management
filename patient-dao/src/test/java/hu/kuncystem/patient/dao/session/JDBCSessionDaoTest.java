@@ -11,10 +11,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import hu.kuncystem.patient.dao.H2TestConfig;
+import hu.kuncystem.patient.dao.H2Config;
 import hu.kuncystem.patient.pojo.session.Session;
 
 /**
@@ -26,7 +27,8 @@ import hu.kuncystem.patient.pojo.session.Session;
  * @version 1.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { H2TestConfig.class })
+@ContextConfiguration(classes = { H2Config.class })
+@ActiveProfiles("test")
 public class JDBCSessionDaoTest {
 
     @Autowired

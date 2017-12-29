@@ -5,10 +5,13 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import hu.kuncystem.patient.dao.beans.JdbcBean;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * This is the settings of h2 database.
@@ -20,11 +23,30 @@ import hu.kuncystem.patient.dao.beans.JdbcBean;
  */
 @Configuration
 @ComponentScan(basePackages = { "hu.kuncystem.patient.dao" })
-@Import(JdbcBean.class)
 public class H2Config {
 
     @Bean
-    public DataSource dataSource() {
+    @Profile("live")
+    public DataSource dataSourceLive() {
         return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("schema.sql").build();
+    }
+
+    @Bean
+    @Profile("test")
+    public DataSource dataSourceTest() {
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).addScript("schema.sql")
+                .addScript("sql_data.sql").build();
+    }
+
+    @Bean
+    public JdbcOperations jdbcTemplatesTest(DataSource ds) {
+        return new JdbcTemplate(ds);
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource ds) {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(ds);
+        return transactionManager;
     }
 }

@@ -16,11 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import hu.kuncystem.patient.dao.H2TestConfig;
+import hu.kuncystem.patient.dao.H2Config;
 import hu.kuncystem.patient.dao.appointment.AppointmentDao;
 import hu.kuncystem.patient.dao.appointment.JDBCAppointmentDao;
 import hu.kuncystem.patient.dao.session.JDBCSessionDao;
@@ -41,7 +42,8 @@ import hu.kuncystem.patient.pojo.user.UserFactory;
  * @version 1.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { H2TestConfig.class })
+@ContextConfiguration(classes = { H2Config.class })
+@ActiveProfiles("test")
 public class JDBCAppointmentDaoTest {
 
     @Autowired
