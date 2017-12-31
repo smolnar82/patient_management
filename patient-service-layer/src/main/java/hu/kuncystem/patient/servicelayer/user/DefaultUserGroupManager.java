@@ -2,7 +2,13 @@ package hu.kuncystem.patient.servicelayer.user;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import hu.kuncystem.patient.dao.user.UserGroupDao;
 import hu.kuncystem.patient.pojo.user.User;
+import hu.kuncystem.patient.pojo.user.UserFactory;
 import hu.kuncystem.patient.pojo.user.UserGroup;
 
 /**
@@ -11,11 +17,13 @@ import hu.kuncystem.patient.pojo.user.UserGroup;
  * 
  * @version 1.0
  */
+@Service
 public class DefaultUserGroupManager implements UserGroupManager {
-    /**
-     * This is a marker which indicates that we want to record new row
-     */
-    public static final int NEW_ROW = -1;
+    @Autowired
+    @Qualifier(value = "JDBCUserGroupDao")
+    private UserGroupDao userGroupDao;
+
+    private final UserFactory userFactory;
 
     /**
      * This class manages all of the data of a group. We can reach some
@@ -24,36 +32,48 @@ public class DefaultUserGroupManager implements UserGroupManager {
      *
      */
     public DefaultUserGroupManager() {
+        userFactory = new UserFactory();
     }
 
-    public long createGroup(String name) {
-        // TODO Auto-generated method stub
-        return 0;
+    public UserGroup createGroup(String name) {
+        return this.createGroup(name, null);
     }
 
-    public long createGroup(String name, String note) {
-        // TODO Auto-generated method stub
-        return 0;
+    public UserGroup createGroup(String name, String note) {
+        // create new POJO obejct
+        UserGroup group = new UserGroup(name);
+        group.setNote(note);
+
+        return userGroupDao.saveUserGroup(group);
     }
 
     public UserGroup getGroup(long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return userGroupDao.getUserGroup(id);
     }
 
     public List<UserGroup> getGroupOfUser(long userId) {
-        // TODO Auto-generated method stub
-        return null;
+        // create new user POJO object
+        User user = userFactory.getUser(UserFactory.DEFAULT);
+        user.setId(userId);
+
+        return userGroupDao.getAllUserGroupByUser(user);
     }
 
     public List<User> getUsersFromGroup(long groupId) {
-        // TODO Auto-generated method stub
-        return null;
+        UserGroup group = new UserGroup(groupId);
+
+        return userGroupDao.getAllUserFromGroup(group);
     }
 
-    public long saveRelation(long userId, long groupId) {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean saveRelation(long userId, long groupId) {
+        // user POJO object
+        User user = userFactory.getUser(UserFactory.DEFAULT);
+        user.setId(userId);
+
+        // group POJO object
+        UserGroup group = new UserGroup(groupId);
+
+        return userGroupDao.saveUserGroupRelation(group, user);
     }
 
 }

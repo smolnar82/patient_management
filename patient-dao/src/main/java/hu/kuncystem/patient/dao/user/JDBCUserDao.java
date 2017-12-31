@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -87,6 +88,8 @@ public class JDBCUserDao implements UserDao {
     public User getUser(long id) {
         try {
             return jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -96,6 +99,8 @@ public class JDBCUserDao implements UserDao {
     public User getUser(String name, String password) {
         try {
             return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -69,6 +70,8 @@ public class JDBCUserGroupDao implements UserGroupDao {
     public List<User> getAllUserFromGroup(UserGroup group) {
         try {
             return jdbc.query(SQL_GET_USERS_FROM_GROUP, new JDBCUserDao.UserRowMapper(), group.getId());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -78,6 +81,8 @@ public class JDBCUserGroupDao implements UserGroupDao {
     public List<UserGroup> getAllUserGroupByUser(User user) {
         try {
             return jdbc.query(SQL_GROUPS_BY_USER, new UserGroupRowMapper(), user.getId());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
@@ -87,6 +92,8 @@ public class JDBCUserGroupDao implements UserGroupDao {
     public UserGroup getUserGroup(long id) {
         try {
             return jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         } catch (DataAccessException e) {
             e.printStackTrace();
         }
