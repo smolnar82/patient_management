@@ -118,9 +118,6 @@ CREATE INDEX appointment_table_FKIndex3 ON appointment_table (sid);
 
 
 
-
-
-
 CREATE INDEX IFK_rel_user_doctor_appointmen ON appointment_table (doctor_id);
 CREATE INDEX IFK_rel_user_patient_appointme ON appointment_table (patient_id);
 CREATE INDEX IFK_rel_appointment_session ON appointment_table (sid);
@@ -163,8 +160,6 @@ CREATE TABLE mod_appointment_table (
   description VARCHAR(300)    ,
   sid BIGINT   NOT NULL   ,
 PRIMARY KEY(id)    ,
-  FOREIGN KEY(appointment_id)
-    REFERENCES appointment_table(id),
   FOREIGN KEY(sid)
     REFERENCES session_list(id));
 
@@ -178,5 +173,15 @@ CREATE INDEX mod_appointment_table_FKIndex2 ON mod_appointment_table (sid);
 CREATE INDEX IFK_rel_appointment_table_modi ON mod_appointment_table (appointment_id);
 CREATE INDEX IFK_rel_mod_appointment_sessio ON mod_appointment_table (sid);
 
+-- ------------------------------------------------------------
+-- triggers
+-- ------------------------------------------------------------
+CREATE TRIGGER IF NOT EXISTS zzz_utg_appointment_table 
+AFTER UPDATE
+ON appointment_table 
+FOR EACH ROW CALL "hu.kuncystem.patient.triggers.ModAppointment";
 
-
+CREATE TRIGGER IF NOT EXISTS zzz_dtg_appointment_table 
+AFTER DELETE
+ON appointment_table 
+FOR EACH ROW CALL "hu.kuncystem.patient.triggers.ModAppointment";

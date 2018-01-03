@@ -31,7 +31,7 @@ public interface AppointmentDao {
      *
      * @param id
      *            The unique row identification of appointment
-     * @return
+     * @return Object.Appointment is a simple POJO object.
      */
     public Appointment getAppointment(long id);
 
@@ -56,7 +56,8 @@ public interface AppointmentDao {
      *
      * @param appointment
      *            Object.Appointment is a simple POJO object.
-     * @return This is a new row id.
+     * @return Object.Appointment is a simple POJO object. This object contains
+     *         the unique id, too.
      */
     public Appointment saveAppointment(Appointment appointment);
 

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -66,31 +67,50 @@ public class JDBCUserGroupDao implements UserGroupDao {
     private JdbcOperations jdbc;
 
     public List<User> getAllUserFromGroup(UserGroup group) {
-        return jdbc.query(SQL_GET_USERS_FROM_GROUP, new JDBCUserDao.UserRowMapper(), group.getId());
+        try {
+            return jdbc.query(SQL_GET_USERS_FROM_GROUP, new JDBCUserDao.UserRowMapper(), group.getId());
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<UserGroup> getAllUserGroupByUser(User user) {
-        return jdbc.query(SQL_GROUPS_BY_USER, new UserGroupRowMapper(), user.getId());
+        try {
+            return jdbc.query(SQL_GROUPS_BY_USER, new UserGroupRowMapper(), user.getId());
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public UserGroup getUserGroup(long id) {
-        return jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
+        try {
+            return jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public UserGroup saveUserGroup(final UserGroup group) {
         KeyHolder holder = new GeneratedKeyHolder();
+        int rows = 0;
+        try {
+            rows = jdbc.update(new PreparedStatementCreator() {
 
-        int rows = jdbc.update(new PreparedStatementCreator() {
+                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                    PreparedStatement ps = conn.prepareStatement(SQL_INSERT_GROUP, new String[] { "id" });
 
-            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                PreparedStatement ps = conn.prepareStatement(SQL_INSERT_GROUP, new String[] { "id" });
+                    ps.setString(1, group.getName());
+                    ps.setString(2, group.getNote());
 
-                ps.setString(1, group.getName());
-                ps.setString(2, group.getNote());
-
-                return ps;
-            }
-        }, holder);
+                    return ps;
+                }
+            }, holder);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
         // if the operations was successed
         if (rows == 1) {
             group.setId(holder.getKey().longValue());
@@ -100,17 +120,22 @@ public class JDBCUserGroupDao implements UserGroupDao {
     }
 
     public boolean saveUserGroupRelation(final UserGroup group, final User user) {
-        int rows = jdbc.update(new PreparedStatementCreator() {
+        int rows = 0;
+        try {
+            rows = jdbc.update(new PreparedStatementCreator() {
 
-            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                PreparedStatement ps = conn.prepareStatement(SQL_INSERT_GROUP_RELATION);
+                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                    PreparedStatement ps = conn.prepareStatement(SQL_INSERT_GROUP_RELATION);
 
-                ps.setLong(1, group.getId());
-                ps.setLong(2, user.getId());
+                    ps.setLong(1, group.getId());
+                    ps.setLong(2, user.getId());
 
-                return ps;
-            }
-        });
+                    return ps;
+                }
+            });
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
         // if the operations was successed
         if (rows == 1) {
             return true;
