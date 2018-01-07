@@ -29,38 +29,38 @@ import hu.kuncystem.patient.servicelayer.utilities.Hash;
 @ActiveProfiles("live")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserManagerTest {
+    private static User user;
+
     @Autowired
     private UserManager userManager;
-    
-    private static User user;
-    
+
     @Test
-    public void stage1_shouldCreateUserSuccessfullyWhenUserDidNotExists(){
+    public void stage1_shouldCreateUserSuccessfullyWhenUserDidNotExists() {
         user = userManager.getUser("user1", Hash.MD5("abcd1234"));
-        if(user.getId() == 0){
+        if (user.getId() == 0) {
             user = userManager.createUser("user1", Hash.MD5("123456"), true);
             assertNotNull(user);
             assertTrue("create of new user failed", user.getId() > 0);
-        }else{
+        } else {
             fail("The user already exsits!");
         }
     }
-    
+
     @Test
-    public void stage2_schouldUpdatePasswordAndSuccessfullyWhenOldAndNewNotMatch(){
+    public void stage2_schouldUpdatePasswordAndSuccessfullyWhenOldAndNewNotMatch() {
         String oldPass = user.getPassword();
-        //update password
+        // update password
         boolean ok = userManager.updateUser(user.getId(), user.getUserName(), Hash.MD5("abcd1234"), true, null, null);
         assertTrue("update of user's data failed", ok);
-        
-        //check, that is the old password equals the new password?
+
+        // check, that is the old password equals the new password?
         user = userManager.getUser(user.getId());
         assertNotNull(user);
         assertTrue("update of user password failed", oldPass != user.getPassword());
     }
-    
+
     @Test
-    public void stage3_schouldDeleteUserSuccessfulyWhenUserExists(){
+    public void stage3_schouldDeleteUserSuccessfulyWhenUserExists() {
         assertTrue("removeUser:65 > delete user failed", userManager.removeUser(user.getId()));
     }
 }

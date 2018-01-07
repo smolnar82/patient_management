@@ -2,6 +2,7 @@ package hu.kuncystem.patient.servicelayer.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import hu.kuncystem.patient.dao.exception.DatabaseException;
@@ -16,6 +17,7 @@ import hu.kuncystem.patient.pojo.user.UserFactory;
  * @version 1.0
  */
 @Service
+@Scope("prototype")
 public class DefaultUserManager implements UserManager {
 
     @Autowired
@@ -83,9 +85,9 @@ public class DefaultUserManager implements UserManager {
         user.setEmail(email);
         user.setFullname(fullname);
 
-        try{
+        try {
             return userDao.updateUser(user);
-        }catch (DatabaseException e) {
+        } catch (DatabaseException e) {
             return false;
         }
     }

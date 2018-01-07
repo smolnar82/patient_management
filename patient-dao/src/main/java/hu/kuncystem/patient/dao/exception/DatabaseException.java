@@ -14,7 +14,7 @@ public class DatabaseException extends RuntimeException {
     public final static String STRING_DATA_ACCESS_EXCEPTION = "The run of query was failed. Is the query string OK? QUERY: ";
 
     /**
-     * Constructor for DataAccessException.
+     * Constructor for DatabaseException.
      * 
      * @param msg
      *            the detail message
@@ -24,7 +24,7 @@ public class DatabaseException extends RuntimeException {
     }
 
     /**
-     * Constructor for DataAccessException.
+     * Constructor for DatabaseException.
      * 
      * @param msg
      *            the detail message
@@ -37,7 +37,7 @@ public class DatabaseException extends RuntimeException {
     }
 
     /**
-     * Constructor for DataAccessException.
+     * Constructor for DatabaseException.
      * 
      * @param cause
      *            the root cause (usually from using a underlying data access

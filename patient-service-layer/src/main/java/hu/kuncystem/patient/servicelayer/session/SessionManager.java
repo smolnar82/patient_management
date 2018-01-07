@@ -17,9 +17,10 @@ public interface SessionManager {
      *            User table.
      * @param ip
      *            Ip address of user.
-     * @return It will return true for success otherwise it will return false.
+     * @return It will return simple Session POJO object which contains the new
+     *         database id.
      */
-    public boolean createSession(long userId, String ip);
+    public Session createSession(long userId, String ip);
 
     /**
      * Create new session data in the database
@@ -30,11 +31,12 @@ public interface SessionManager {
      * @param ip
      *            Ip address of user.
      * @param userAgent
-     *            This is other user�s data. This string has to contain data
+     *            This is other user's data. This string has to contain data
      *            from the user pc or the browser.
-     * @return It will return true for success otherwise it will return false.
+     * @return It will return simple Session POJO object which contains the new
+     *         database id.
      */
-    public boolean createSession(long userId, String ip, String userAgent);
+    public Session createSession(long userId, String ip, String userAgent);
 
     /**
      * This method disable the current session.
