@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.dao.user.UserGroupDao;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserFactory;
@@ -44,7 +45,12 @@ public class DefaultUserGroupManager implements UserGroupManager {
         UserGroup group = new UserGroup(name);
         group.setNote(note);
 
-        return userGroupDao.saveUserGroup(group);
+        try {
+            group = userGroupDao.saveUserGroup(group);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        return group;
     }
 
     public UserGroup getGroup(long id) {
@@ -73,7 +79,11 @@ public class DefaultUserGroupManager implements UserGroupManager {
         // group POJO object
         UserGroup group = new UserGroup(groupId);
 
-        return userGroupDao.saveUserGroupRelation(group, user);
+        try {
+            return userGroupDao.saveUserGroupRelation(group, user);
+        } catch (DatabaseException e) {
+            return false;
+        }
     }
 
 }

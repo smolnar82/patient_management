@@ -3,6 +3,8 @@ package hu.kuncystem.patient.servicelayer.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.dao.user.UserDao;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserFactory;
@@ -44,7 +46,12 @@ public class DefaultUserManager implements UserManager {
         user.setFullname(fullname);
         user.setEmail(email);
 
-        return userDao.saveUser(user);
+        try {
+            user = userDao.saveUser(user);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public User getUser(long id) {
@@ -59,7 +66,11 @@ public class DefaultUserManager implements UserManager {
         User user = userFactory.getUser(UserFactory.DEFAULT);
         user.setId(userId);
 
-        return userDao.deleteUser(user);
+        try {
+            return userDao.deleteUser(user);
+        } catch (DatabaseException e) {
+            return false;
+        }
     }
 
     public boolean updateUser(long userId, String name, String password, boolean active, String fullname,
@@ -72,7 +83,11 @@ public class DefaultUserManager implements UserManager {
         user.setEmail(email);
         user.setFullname(fullname);
 
-        return userDao.updateUser(user);
+        try{
+            return userDao.updateUser(user);
+        }catch (DatabaseException e) {
+            return false;
+        }
     }
 
 }

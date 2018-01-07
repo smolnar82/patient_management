@@ -16,6 +16,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserGroup;
 
@@ -67,40 +68,36 @@ public class JDBCUserGroupDao implements UserGroupDao {
     @Autowired
     private JdbcOperations jdbc;
 
-    public List<User> getAllUserFromGroup(UserGroup group) {
+    public List<User> getAllUserFromGroup(UserGroup group) throws DatabaseException {
         try {
             return jdbc.query(SQL_GET_USERS_FROM_GROUP, new JDBCUserDao.UserRowMapper(), group.getId());
-        } catch (EmptyResultDataAccessException e) {
-            return null;
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_GET_USERS_FROM_GROUP,
+                    e);
         }
-        return null;
     }
 
-    public List<UserGroup> getAllUserGroupByUser(User user) {
+    public List<UserGroup> getAllUserGroupByUser(User user) throws DatabaseException {
         try {
             return jdbc.query(SQL_GROUPS_BY_USER, new UserGroupRowMapper(), user.getId());
-        } catch (EmptyResultDataAccessException e) {
-            return null;
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_GROUPS_BY_USER, e);
         }
-        return null;
     }
 
-    public UserGroup getUserGroup(long id) {
+    public UserGroup getUserGroup(long id) throws DatabaseException {
+        UserGroup group = null;
         try {
-            return jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
+            group = jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            group = new UserGroup();
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_GROUP_BY_ID, e);
         }
-        return null;
+        return group;
     }
 
-    public UserGroup saveUserGroup(final UserGroup group) {
+    public UserGroup saveUserGroup(final UserGroup group) throws DatabaseException {
         KeyHolder holder = new GeneratedKeyHolder();
         int rows = 0;
         try {
@@ -116,17 +113,18 @@ public class JDBCUserGroupDao implements UserGroupDao {
                 }
             }, holder);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_INSERT_GROUP, e);
         }
         // if the operations was successed
         if (rows == 1) {
             group.setId(holder.getKey().longValue());
-            return group;
+        } else {
+            group.setId(0);
         }
-        return null;
+        return group;
     }
 
-    public boolean saveUserGroupRelation(final UserGroup group, final User user) {
+    public boolean saveUserGroupRelation(final UserGroup group, final User user) throws DatabaseException {
         int rows = 0;
         try {
             rows = jdbc.update(new PreparedStatementCreator() {
@@ -141,7 +139,8 @@ public class JDBCUserGroupDao implements UserGroupDao {
                 }
             });
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(
+                    DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_INSERT_GROUP_RELATION, e);
         }
         // if the operations was successed
         if (rows == 1) {

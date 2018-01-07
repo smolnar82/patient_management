@@ -6,9 +6,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,34 +31,42 @@ import hu.kuncystem.patient.pojo.session.Session;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { H2Config.class })
 @ActiveProfiles("test")
-public class JDBCSessionDaoTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class SessionDaoTest {
 
-    @Autowired
-    @Qualifier(value = "JDBCSessionDao")
-    private SessionDao sessionDao;
+    private static Session session;
 
-    private Session session;
-
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         session = new Session(1, "127.0.0.1");
         session.setDisabled(false);
         session.setUserAgent("TESTBook 3.2; Mozilla 4=34.2");
     }
 
-    @Test
-    public void testSession() {
-        assertThat(sessionDao, instanceOf(JDBCSessionDao.class));
+    @Autowired
+    @Qualifier(value = "JDBCSessionDao")
+    private SessionDao sessionDao;
 
-        // create new session
+    @Test
+    public void stage1_schouldSuccessfullyWhenSessionDaoVariableContainJDBCSessionDaoObject() {
+        assertThat(sessionDao, instanceOf(JDBCSessionDao.class));
+    }
+
+    @Test
+    public void stage2_schouldCreateSessionSuccessfully() {
         session = sessionDao.saveSession(session);
         assertNotNull(session);
-        assertTrue("testSession:51 > new session create failed", session.getId() > 0);
+        assertTrue("new session create failed", session.getId() > 0);
+    }
 
-        // update session data
+    @Test
+    public void stage3_schouldUpdateSessionDataWhenSessionExsitsById() {
+        session.setUserAgent("XXXXTESTBook 3.2; Mozilla 4=34.11");
         assertTrue(sessionDao.updateSession(session));
+    }
 
-        // get session data
+    @Test
+    public void stage4_schouldGetSessionDataWhenSessionExsitsById() {
         session = sessionDao.getSession(session.getId());
         assertEquals("127.0.0.1", session.getIp());
     }
