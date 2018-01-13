@@ -79,7 +79,7 @@ public class AppointmentDaoTest {
         // create new appointment
         Date date = null;
         try {
-            date = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-10 10:00:00");
+            date = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-10 10:00:00");
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -147,8 +147,8 @@ public class AppointmentDaoTest {
         Date date = null;
         Date date2 = null;
         try {
-            date = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-01 10:00:00");
-            date2 = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-30 10:00:00");
+            date = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-01 10:00:00");
+            date2 = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-30 10:00:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }

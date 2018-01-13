@@ -17,7 +17,7 @@ import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.servicelayer.utilities.Hash;
 
 /**
- * Testing the DefaultUserManager methods
+ * Testing the UserManager methods
  *
  * @author Csaba Kun <kuncy88@gmail.com>
  * @date 2017. dec. 28.

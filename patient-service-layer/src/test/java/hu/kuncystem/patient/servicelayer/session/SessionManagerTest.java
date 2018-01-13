@@ -48,6 +48,13 @@ public class SessionManagerTest {
     public void stage1_schouldCreateSessionSuccessfullyWhenDidNotStart() {
         user = userManager.createUser("test_session", Hash.MD5("12345"), true);
 
+        // destroy old session(if exists)
+        try {
+            sessionManager.destroy();
+        } catch (SessionNotExistsException e) {
+            // we haven't session(do something)
+        }
+        // create new session proccess
         sessionManager.createSession(user.getId(), "127.0.0.1", "TEST JUnit 4");
     }
 
@@ -82,8 +89,11 @@ public class SessionManagerTest {
     @Test
     public void stage6_schouldDestroySessionUnSuccessfullyBecauseSessionDidNotExsist() {
         try {
-            sessionManager.destroy();
-            fail("The session is still exists!");
+            if (sessionManager.destroy()) {
+                fail("The session exists still!");
+            } else {
+                assertTrue(true);
+            }
         } catch (SessionNotExistsException e) {
             assertTrue(true);
         }

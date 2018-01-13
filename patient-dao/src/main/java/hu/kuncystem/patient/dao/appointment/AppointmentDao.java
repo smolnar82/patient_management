@@ -17,6 +17,10 @@ import hu.kuncystem.patient.pojo.user.User;
  * @version 1.0
  */
 public interface AppointmentDao {
+    // used date format
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd";
+
     /**
      * Delete one appointment row from the database.
      *
@@ -52,7 +56,7 @@ public interface AppointmentDao {
      *            open.
      * @param dateTo
      *            End of filter date. If this is null then the end date is open.
-     * @return Object.List object that it is contain Appointment objects.4
+     * @return Object.List object that it is contain Appointment objects.
      * @throws DatabaseException
      *             if the query fails
      */
