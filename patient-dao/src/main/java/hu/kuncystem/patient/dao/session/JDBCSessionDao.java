@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.session.Session;
 
 /**
@@ -56,17 +58,19 @@ public class JDBCSessionDao implements SessionDao {
     @Autowired
     private JdbcOperations jdbc;
 
-    public Session getSession(long sessionId) {
+    public Session getSession(long sessionId) throws DatabaseException {
         Session session = null;
         try {
             session = jdbc.queryForObject(SQL_FIND_BY_ID, new SessionRowMapper(), sessionId);
+        } catch (EmptyResultDataAccessException e) {
+            session = new Session();
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
         }
         return session;
     }
 
-    public Session saveSession(final Session session) {
+    public Session saveSession(final Session session) throws DatabaseException {
         KeyHolder holder = new GeneratedKeyHolder();
         int rows = 0;
         try {
@@ -84,25 +88,25 @@ public class JDBCSessionDao implements SessionDao {
                 }
             }, holder);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_INSERT, e);
         }
         // if the operations was successed
         if (rows == 1) {
             session.setId(holder.getKey().longValue());
-            return session;
+        } else {
+            session.setId(0);
         }
-        return null;
+        return session;
     }
 
-    public boolean updateSession(Session session) {
+    public boolean updateSession(Session session) throws DatabaseException {
         try {
             int num = jdbc.update(SQL_UPDATE, session.getUserId(), session.getIp(), session.getUserAgent(),
                     session.isDisabled(), session.getId());
             return (num > 0) ? true : false;
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_UPDATE, e);
         }
-        return false;
     }
 
 }

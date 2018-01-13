@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +15,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserFactory;
 
@@ -74,35 +76,42 @@ public class JDBCUserDao implements UserDao {
     @Autowired
     private JdbcOperations jdbc;
 
-    public boolean deleteUser(User user) {
+    public boolean deleteUser(User user) throws DatabaseException {
         try {
             int num = jdbc.update(SQL_DELETE, user.getId());
             return (num > 0) ? true : false;
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_DELETE, e);
         }
-        return false;
     }
 
-    public User getUser(long id) {
+    public User getUser(long id) throws DatabaseException {
+        User user = null;
         try {
-            return jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+            user = jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            UserFactory userFactory = new UserFactory();
+            user = userFactory.getUser(UserFactory.DEFAULT);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
         }
-        return null;
+        return user;
     }
 
-    public User getUser(String name, String password) {
+    public User getUser(String name, String password) throws DatabaseException {
+        User user = null;
         try {
-            return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+            user = jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+        } catch (EmptyResultDataAccessException e) {
+            UserFactory userFactory = new UserFactory();
+            user = userFactory.getUser(UserFactory.DEFAULT);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND, e);
         }
-        return null;
+        return user;
     }
 
-    public User saveUser(final User user) {
+    public User saveUser(final User user) throws DatabaseException {
         KeyHolder holder = new GeneratedKeyHolder();
         int rows = 0;
         try {
@@ -120,24 +129,24 @@ public class JDBCUserDao implements UserDao {
                 }
             }, holder);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_INSERT, e);
         }
         // if the operations was successed
         if (rows == 1) {
             user.setId(holder.getKey().longValue());
-            return user;
+        } else {
+            user.setId(0);
         }
-        return null;
+        return user;
     }
 
-    public boolean updateUser(User user) {
+    public boolean updateUser(User user) throws DatabaseException {
         try {
             int num = jdbc.update(SQL_UPDATE, user.getUserName(), user.getPassword(), user.getFullname(),
                     user.getEmail(), user.isActive(), user.getId());
             return (num > 0) ? true : false;
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_UPDATE, e);
         }
-        return false;
     }
 }

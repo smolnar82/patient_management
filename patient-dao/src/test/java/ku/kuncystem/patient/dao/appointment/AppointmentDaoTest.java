@@ -11,16 +11,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
 import hu.kuncystem.patient.dao.H2Config;
 import hu.kuncystem.patient.dao.appointment.AppointmentDao;
 import hu.kuncystem.patient.dao.appointment.JDBCAppointmentDao;
@@ -44,57 +44,17 @@ import hu.kuncystem.patient.pojo.user.UserFactory;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { H2Config.class })
 @ActiveProfiles("test")
-public class JDBCAppointmentDaoTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AppointmentDaoTest {
 
-    @Autowired
-    @Qualifier(value = "JDBCAppointmentDao")
-    private AppointmentDao appointmentDao;
+    private static Appointment appointment;
 
-    @Autowired
-    @Qualifier(value = "JDBCUserDao")
-    private UserDao userDao;
+    private static User patient, doctor;
 
-    @Autowired
-    @Qualifier(value = "JDBCSessionDao")
-    private SessionDao sessionDao;
+    private static Session session;
 
-    private Appointment appointment;
-
-    private User patient, doctor;
-
-    private Session session;
-
-    /**
-     * Create new test session.
-     */
-    private void createSession() {
-        assertThat(sessionDao, instanceOf(JDBCSessionDao.class));
-
-        // create new session
-        session = sessionDao.saveSession(session);
-        assertNotNull(session);
-        assertTrue("testSession:51 > new session create failed", session.getId() > 0);
-    }
-
-    /**
-     * Create new users. We will test with these users.
-     */
-    private void createUserData() {
-        assertThat(userDao, instanceOf(JDBCUserDao.class));
-
-        // create new user(patient)
-        patient = userDao.saveUser(patient);
-        assertNotNull(patient);
-        assertTrue("createUserData:84 > new user create failed", patient.getId() > 0);
-
-        // create new user(doctor)
-        doctor = userDao.saveUser(doctor);
-        assertNotNull(doctor);
-        assertTrue("createUserData:99 > new user create failed", doctor.getId() > 0);
-    }
-
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         UserFactory userFactory = new UserFactory();
 
         // create new object of patient user
@@ -115,24 +75,11 @@ public class JDBCAppointmentDaoTest {
         session = new Session(1, "127.0.0.1");
         session.setDisabled(false);
         session.setUserAgent("TESTBook 3.2; Mozilla 4=34.2");
-    }
 
-    @Test
-    @Transactional
-    public void testAppointment() {
-        assertThat(appointmentDao, instanceOf(JDBCAppointmentDao.class));
-
-        // add new user for test
-        this.createUserData();
-
-        // create new session data
-        this.createSession();
-
-        // create new appointment pojo object
+        // create new appointment
         Date date = null;
-        Date date2 = null;
         try {
-            date = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-10 10:00:00");
+            date = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-10 10:00:00");
         } catch (ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -140,34 +87,82 @@ public class JDBCAppointmentDaoTest {
         appointment = new Appointment(doctor, patient, date);
         appointment.setDescripton("This is a test schedule.");
         appointment.setNotes(Arrays.asList(new String[] { "note1", "note2", "note3" }));
-        appointment.setSidid(session.getId());
+    }
 
-        // save data into database
+    @Autowired
+    @Qualifier(value = "JDBCAppointmentDao")
+    private AppointmentDao appointmentDao;
+
+    @Autowired
+    @Qualifier(value = "JDBCUserDao")
+    private UserDao userDao;
+
+    @Autowired
+    @Qualifier(value = "JDBCSessionDao")
+    private SessionDao sessionDao;
+
+    @Test
+    public void stage1_checkTheJDBCVariable() {
+        assertThat(userDao, instanceOf(JDBCUserDao.class));
+        assertThat(sessionDao, instanceOf(JDBCSessionDao.class));
+        assertThat(appointmentDao, instanceOf(JDBCAppointmentDao.class));
+    }
+
+    @Test
+    public void stage2_schouldCreateNewUsersWhenUsersDidNotExists() {
+        // create new user(patient)
+        patient = userDao.saveUser(patient);
+        assertNotNull(patient);
+        assertTrue("new user create failed", patient.getId() > 0);
+
+        // create new user(doctor)
+        doctor = userDao.saveUser(doctor);
+        assertNotNull(doctor);
+        assertTrue("new user create failed", doctor.getId() > 0);
+    }
+
+    @Test
+    public void stage3_schouldCreateSession() {
+        session = sessionDao.saveSession(session);
+        assertNotNull(session);
+        assertTrue("new session create failed", session.getId() > 0);
+    }
+
+    @Test
+    public void stage4_schouldCreateNewAppointment() {
+        appointment.setSidid(session.getId());
         appointment = appointmentDao.saveAppointment(appointment);
         assertNotNull(appointment);
-        assertTrue("createAppointment:112 > new appointment create failed", appointment.getId() > 0);
+        assertTrue("new appointment create failed", appointment.getId() > 0);
+    }
 
-        // get data from database
-        long id = appointment.getId();
-        appointment = null;
-        appointment = appointmentDao.getAppointment(id);
-        assertTrue("getAppointment:118 > select data error", appointment.getNotes().size() == 3);
+    @Test
+    public void stage5_schouldGetAppointmentWhenExists() {
+        appointment = appointmentDao.getAppointment(appointment.getId());
+        assertTrue("select data error", appointment.getNotes().size() == 3);
+    }
 
-        // get more data from database
+    @Test
+    public void stage6_schouldGetAppointmentsListWhenExistsByDate() {
+        Date date = null;
+        Date date2 = null;
         try {
-            date = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-01 10:00:00");
-            date2 = new SimpleDateFormat(JDBCAppointmentDao.DATE_FORMAT).parse("2017-07-30 10:00:00");
+            date = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-01 10:00:00");
+            date2 = new SimpleDateFormat(AppointmentDao.DATE_FORMAT).parse("2017-07-30 10:00:00");
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         List<Appointment> listAppointments = appointmentDao.getAppointments(doctor, date, date2);
-        assertTrue("getAppointments:131 > list proccess error", listAppointments.size() > 0);
+        assertTrue("list proccess error", listAppointments.size() > 0);
+    }
 
-        // update an appointment
-        assertTrue("updateAppointment:137 > update was unsuccessful", appointmentDao.updateAppointment(appointment));
+    @Test
+    public void stage7_schouldUpdateAppointmentSuccessfullyWhenAppointmentExsitsById() {
+        assertTrue("update was unsuccessful", appointmentDao.updateAppointment(appointment));
+    }
 
-        // delete data from database
+    @Test
+    public void stage8_schouldDeleteSuccessfullyWhenAppointmentExsist() {
         assertTrue("deleteAppointment:120 > row delete failed", appointmentDao.deleteAppointment(appointment));
     }
 }

@@ -76,7 +76,7 @@ public interface User {
 
     /**
      * This is unique row id of user in database. If this id is -1 then this
-     * object doesn�t contain data of new user. If the id is greater than -1
+     * object doesn't contain data of new user. If the id is greater than -1
      * then this object contains data of an existing user.
      *
      * @param id
@@ -96,7 +96,7 @@ public interface User {
      * Set user's name. This name is alias name of user. e.g.: john1978
      *
      * @param name
-     *            This is the user�s name.
+     *            This is the user's name.
      */
     public void setUserName(String name);
 

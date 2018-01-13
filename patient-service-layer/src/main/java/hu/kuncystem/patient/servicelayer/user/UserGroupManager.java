@@ -2,6 +2,8 @@ package hu.kuncystem.patient.servicelayer.user;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserGroup;
 
@@ -18,10 +20,11 @@ public interface UserGroupManager {
      *
      * @param name
      *            This is the name of group.
-     * @return It will return new row id for success otherwise it will return
-     *         null.
+     * @return It will return new pojo object for success otherwise it will
+     *         return null.
      */
-    public long createGroup(String name);
+    @Transactional
+    public UserGroup createGroup(String name);
 
     /**
      * Create new user group in the database.
@@ -30,10 +33,11 @@ public interface UserGroupManager {
      *            This is the name of group.
      * @param note
      *            This is a short description of group.
-     * @return It will return new row id for success otherwise it will return
-     *         null.
+     * @return It will return new pojo object for success otherwise it will
+     *         return null.
      */
-    public long createGroup(String name, String note);
+    @Transactional
+    public UserGroup createGroup(String name, String note);
 
     /**
      * Get one data of group from the database.
@@ -42,7 +46,7 @@ public interface UserGroupManager {
      *            This is the unique group id. This id identifies one row in
      *            UserGroup table.
      * @return Object.UserGroup object is a simple POJO object. This method
-     *         return null if the group isn�t found in database.
+     *         return null if the group isn't found in database.
      */
     public UserGroup getGroup(long id);
 
@@ -75,7 +79,8 @@ public interface UserGroupManager {
      * @param groupId
      *            This is the unique group id. This id identifies one row in
      *            UserGroup table.
-     * @return will return new row id for success otherwise it will return null.
+     * @return will return true for success otherwise it will return false.
      */
-    public long saveRelation(long userId, long groupId);
+    @Transactional
+    public boolean saveRelation(long userId, long groupId);
 }

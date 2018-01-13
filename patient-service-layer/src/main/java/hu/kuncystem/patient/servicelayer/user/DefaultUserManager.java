@@ -1,6 +1,14 @@
 package hu.kuncystem.patient.servicelayer.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import hu.kuncystem.patient.dao.exception.DatabaseException;
+import hu.kuncystem.patient.dao.user.UserDao;
 import hu.kuncystem.patient.pojo.user.User;
+import hu.kuncystem.patient.pojo.user.UserFactory;
 
 /**
  * @author Csaba Kun <kuncy88@gmail.com>
@@ -8,50 +16,80 @@ import hu.kuncystem.patient.pojo.user.User;
  * 
  * @version 1.0
  */
+@Service
+@Scope("prototype")
 public class DefaultUserManager implements UserManager {
-    /**
-     * This is a marker which indicates that we want to record new row
-     */
-    public static final int NEW_ROW = -1;
+
+    @Autowired
+    @Qualifier("JDBCUserDao")
+    private UserDao userDao;
+
+    private final UserFactory userFactory;
 
     /**
-     * This class manages all of the user�s data. We can reach some operation
+     * This class manages all of the user's data. We can reach some operation
      * functions through the class. We can create, update or delete one user�s
      * data, too.
      *
      */
     public DefaultUserManager() {
+        userFactory = new UserFactory();
     }
 
-    public long createUser(String name, String password, boolean active) {
-        // TODO Auto-generated method stub
-        return 0;
+    public User createUser(String name, String password, boolean active) {
+        return this.createUser(name, password, active, null, null);
     }
 
-    public long createUser(String name, String password, boolean active, String fullname, String email) {
-        // TODO Auto-generated method stub
-        return 0;
+    public User createUser(String name, String password, boolean active, String fullname, String email) {
+        User user = userFactory.getUser(UserFactory.DEFAULT);
+        user.setUserName(name);
+        user.setPassword(password);
+        user.setActive(active);
+        user.setFullname(fullname);
+        user.setEmail(email);
+
+        try {
+            user = userDao.saveUser(user);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public User getUser(long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return userDao.getUser(id);
     }
 
     public User getUser(String name, String password) {
-        // TODO Auto-generated method stub
-        return null;
+        return userDao.getUser(name, password);
     }
 
     public boolean removeUser(long userId) {
-        // TODO Auto-generated method stub
-        return false;
+        User user = userFactory.getUser(UserFactory.DEFAULT);
+        user.setId(userId);
+
+        try {
+            return userDao.deleteUser(user);
+        } catch (DatabaseException e) {
+            return false;
+        }
     }
 
     public boolean updateUser(long userId, String name, String password, boolean active, String fullname,
             String email) {
-        // TODO Auto-generated method stub
-        return false;
+        User user = userFactory.getUser(UserFactory.DEFAULT);
+        user.setId(userId);
+        user.setUserName(name);
+        user.setPassword(password);
+        user.setActive(active);
+        user.setEmail(email);
+        user.setFullname(fullname);
+
+        try {
+            return userDao.updateUser(user);
+        } catch (DatabaseException e) {
+            return false;
+        }
     }
 
 }

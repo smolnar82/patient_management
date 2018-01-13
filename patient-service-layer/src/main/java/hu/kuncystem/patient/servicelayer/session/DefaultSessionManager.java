@@ -1,6 +1,16 @@
 package hu.kuncystem.patient.servicelayer.session;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+
+import hu.kuncystem.patient.dao.exception.DatabaseException;
+import hu.kuncystem.patient.dao.session.SessionDao;
 import hu.kuncystem.patient.pojo.session.Session;
+import hu.kuncystem.patient.servicelayer.exception.SessionDataChangeException;
+import hu.kuncystem.patient.servicelayer.exception.SessionExistsException;
+import hu.kuncystem.patient.servicelayer.exception.SessionNotExistsException;
 
 /**
  * This class use the singleton pattern desing that we handle the session datas.
@@ -13,22 +23,15 @@ import hu.kuncystem.patient.pojo.session.Session;
  * 
  * @version 1.0
  */
+@Service("defaultSessionManager")
+@Scope("singleton")
 public class DefaultSessionManager implements SessionManager {
-    // current instance
-    private static SessionManager instance;
-
-    /**
-     * This method create a new instance if it is necessary and/or it will
-     * return the current instance.
-     * 
-     * @return
-     */
-    public static SessionManager getInstance() {
-        return instance;
-    }
+    @Autowired
+    @Qualifier(value = "JDBCSessionDao")
+    private SessionDao sessionDao;
 
     // current session data
-    private Session currentSession;
+    private Session currentSession = null;
 
     /**
      * This class manages all of the data of the session. We can reach some
@@ -39,28 +42,74 @@ public class DefaultSessionManager implements SessionManager {
     private DefaultSessionManager() {
     }
 
-    public boolean createSession(long userId, String ip) {
-        // TODO Auto-generated method stub
-        return false;
+    public Session createSession(long userId, String ip) throws SessionExistsException {
+        return this.createSession(userId, ip, null);
     }
 
-    public boolean createSession(long userId, String ip, String userAgent) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    public Session createSession(long userId, String ip, String userAgent)
+            throws SessionExistsException, SessionDataChangeException {
+        if (currentSession == null) { // if the session doesn't exists, yet
+            currentSession = new Session(userId, ip);
+            currentSession.setUserAgent(userAgent);
+            currentSession.setDisabled(false);
 
-    public boolean destroy() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public Session getSession() {
+            try {
+                // create new session in the database
+                currentSession = sessionDao.saveSession(currentSession);
+            } catch (DatabaseException e) { // it happend database error
+                throw new SessionDataChangeException(e);
+            }
+        } else { // the session already exists
+            throw new SessionExistsException();
+        }
         return currentSession;
     }
 
-    public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean destroy() throws SessionDataChangeException, SessionNotExistsException {
+        boolean ok = false;
+        // we can destroy this session if this exists
+        if (currentSession != null) {
+            try {
+                // disable in the database
+                currentSession.setDisabled(true);
+                ok = sessionDao.updateSession(currentSession);
+                if (ok) {
+                    currentSession = null;
+                }
+
+            } catch (DatabaseException e) { // catch the database error
+                throw new SessionDataChangeException(e);
+            }
+
+            // if the destroy proccess was unsuccesful then we have to reset
+            // this flag
+            if (!ok && currentSession.isDisabled()) {
+                currentSession.setDisabled(false);
+            }
+
+        } else { // the session doesn't exists yet
+            throw new SessionNotExistsException();
+        }
+
+        return ok;
+
+    }
+
+    public Session getSession() throws SessionNotExistsException {
+        if (currentSession != null) {
+            return currentSession;
+        } else {
+            throw new SessionNotExistsException();
+        }
+
+    }
+
+    public boolean isEnabled() throws SessionNotExistsException {
+        if (currentSession != null) {
+            return !currentSession.isDisabled();
+        } else {
+            throw new SessionNotExistsException();
+        }
     }
 
 }

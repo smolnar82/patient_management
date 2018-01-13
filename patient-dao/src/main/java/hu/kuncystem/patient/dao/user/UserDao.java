@@ -1,5 +1,6 @@
 package hu.kuncystem.patient.dao.user;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.user.User;
 
 /**
@@ -18,8 +19,10 @@ public interface UserDao {
      * @param user
      *            Object.User is a simple POJO object.
      * @return It will return true for success otherwise it will return false.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public boolean deleteUser(User user);
+    public boolean deleteUser(User user) throws DatabaseException;
 
     /**
      * Get one row from the database.
@@ -27,8 +30,10 @@ public interface UserDao {
      * @param id
      *            Unique identification of the row.
      * @return Object.User is a simple POJO object.
+     * @throws DatabaseException
+     *             if the query fails
      */
-    public User getUser(long id);
+    public User getUser(long id) throws DatabaseException;
 
     /**
      * Get one row from the database. Both parameters together identify one user
@@ -39,8 +44,10 @@ public interface UserDao {
      * @param password
      *            This is the user's password.
      * @return Object.User is a simple POJO object.
+     * @throws DatabaseException
+     *             if the query fails
      */
-    public User getUser(String name, String password);
+    public User getUser(String name, String password) throws DatabaseException;
 
     /**
      * Insert new user into the database.
@@ -48,9 +55,12 @@ public interface UserDao {
      * @param user
      *            Object.User is a simple POJO object(Patient or Doctor model
      *            object).
-     * @return This is new row id.
+     * @return This is a simple POJO that we added in parameter and this object
+     *         contains the new id that we got from the database.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public User saveUser(User user);
+    public User saveUser(User user) throws DatabaseException;
 
     /**
      * Update one row in the database.
@@ -58,6 +68,8 @@ public interface UserDao {
      * @param user
      *            Object.User is a simple POJO object.
      * @return It will return true for success otherwise it will return false.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public boolean updateUser(User user);
+    public boolean updateUser(User user) throws DatabaseException;
 }
