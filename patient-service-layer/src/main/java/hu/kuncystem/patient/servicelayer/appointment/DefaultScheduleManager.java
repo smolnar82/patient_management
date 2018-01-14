@@ -156,13 +156,16 @@ public class DefaultScheduleManager implements ScheduleManager {
             // then the date is free.
             ok = Math.abs(diff) >= INTERVAL_MIN;
         } else if (appointmentList.size() >= 3) {
-            //we have too many appointment so date from param can't be free
+            // we have too many appointment so date from param can't be free
             ok = false;
         } else {
-            //we have two dates
-            //the dates(from the database) are in order
-            //if any dates is not equal with the negative or positive pair then date from param can't be free
-            if (date1.compareTo(appointmentList.get(0).getTimet()) != 0
+            // we have two dates
+            // the dates(from the database) are in order
+            // if any dates is not equal with the negative or positive pair then
+            // date from param can't be free
+            if (appointmentDate.compareTo(appointmentList.get(0).getTimet()) == 0
+                    || appointmentDate.compareTo(appointmentList.get(1).getTimet()) == 0
+                    || date1.compareTo(appointmentList.get(0).getTimet()) != 0
                     || date2.compareTo(appointmentList.get(1).getTimet()) != 0) {
                 ok = false;
             }
