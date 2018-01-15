@@ -11,25 +11,25 @@ package hu.kuncystem.patient.servicelayer.exception;
  * @version 1.0
  */
 @SuppressWarnings("serial")
-public class SessionChangeDatabaseException extends RuntimeException {
+public class SessionDataChangeException extends RuntimeException {
     private final static String STRING_CHANGE_ERROR = "SessionManager couldn't change data in the database!";
 
     /**
-     * Constructor for SessionChangeDatabaseException.
+     * Constructor for SessionDataChangeException.
      * 
      */
-    public SessionChangeDatabaseException() {
+    public SessionDataChangeException() {
         super(STRING_CHANGE_ERROR);
     }
 
     /**
-     * Constructor for SessionChangeDatabaseException.
+     * Constructor for SessionDataChangeException.
      * 
      * @param cause
      *            the root cause (usually from using a underlying data access
      *            API such as JDBC)
      */
-    public SessionChangeDatabaseException(Throwable cause) {
+    public SessionDataChangeException(Throwable cause) {
         super(STRING_CHANGE_ERROR + " | " + cause.getMessage(), cause);
     }
 }

@@ -19,7 +19,7 @@ import hu.kuncystem.patient.pojo.user.UserGroup;
  * 
  * @version 1.0
  */
-@Service
+@Service("defaultUserGroupManager")
 @Scope("prototype")
 public class DefaultUserGroupManager implements UserGroupManager {
     @Autowired

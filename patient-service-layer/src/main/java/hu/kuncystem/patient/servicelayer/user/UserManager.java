@@ -58,7 +58,7 @@ public interface UserManager {
     public User getUser(long id);
 
     /**
-     * Get one user�s data from the database. The name and the password can
+     * Get one user's data from the database. The name and the password can
      * identify one row, too.
      *
      * @param name

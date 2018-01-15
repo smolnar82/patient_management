@@ -14,14 +14,31 @@ import hu.kuncystem.patient.pojo.appointment.Appointment;
 public interface ScheduleManager {
 
     /**
-     * Get more rows from the data source. These rows contain the appointment of
-     * the doctor or the patient.
+     * Add new appointment into the database.
      *
-     * @param userId
-     *            The user of id whose data we want to be queried.
-     * @return Object.List object that it is contain Appointment objects.
+     * @param doctorId
+     *            Identification of one doctor user.
+     * @param patientId
+     *            Identification of one patient user.
+     * @param appointment
+     *            Date of appointment when the user will meet her/his doctor.
+     * @param description
+     *            The meeting details.
+     * @param notes
+     *            Short tags of appointment.
+     * @return Appointment POJO object which contains the new row id.
      */
-    public List<Appointment> getAppointments(long userId);
+    public Appointment createAppointment(long doctorId, long patientId, Date appointment, String description,
+            List<String> notes);
+
+    /**
+     * Get one appointment row from the database.
+     *
+     * @param id
+     *            The unique row identification of appointment
+     * @return Object.Appointment is a simple POJO object.
+     */
+    public Appointment getAppointment(long appointmentId);
 
     /**
      * Get more rows from the data source. These rows contain the appointment of
@@ -62,19 +79,23 @@ public interface ScheduleManager {
     public boolean reScheduleAppointment(long userId, Date srcDate, Date targetDate);
 
     /**
-     * Add new appointment into the database or update an existing row.
+     * Update an appointment in the database. Don't use this to change the time
+     * of appointment. If you want to change the time then you have to use the
+     * reScheduleAppointment method.
      *
+     * @param appointmentId
+     *            It is a unique id of appointment in the data source. We will
+     *            update this row.
      * @param doctorId
      *            Identification of one doctor user.
      * @param patientId
      *            Identification of one patient user.
-     * @param appointment
-     *            Date of appointment when the user will meet her/his doctor.
      * @param description
      *            The meeting details.
      * @param notes
      *            Short tags of appointment.
-     * @return Inserted or updated row id.
+     * @return It will return true for success otherwise it will return false.
      */
-    public long save(long doctorId, long patientId, Date appointment, String description, List<String> notes);
+    public boolean updateAppointment(long appointmentId, long doctorId, long patientId, String description,
+            List<String> notes);
 }

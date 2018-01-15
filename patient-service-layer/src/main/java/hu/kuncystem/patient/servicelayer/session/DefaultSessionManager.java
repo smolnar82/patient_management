@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.dao.session.SessionDao;
 import hu.kuncystem.patient.pojo.session.Session;
-import hu.kuncystem.patient.servicelayer.exception.SessionChangeDatabaseException;
+import hu.kuncystem.patient.servicelayer.exception.SessionDataChangeException;
 import hu.kuncystem.patient.servicelayer.exception.SessionExistsException;
 import hu.kuncystem.patient.servicelayer.exception.SessionNotExistsException;
 
@@ -47,7 +47,7 @@ public class DefaultSessionManager implements SessionManager {
     }
 
     public Session createSession(long userId, String ip, String userAgent)
-            throws SessionExistsException, SessionChangeDatabaseException {
+            throws SessionExistsException, SessionDataChangeException {
         if (currentSession == null) { // if the session doesn't exists, yet
             currentSession = new Session(userId, ip);
             currentSession.setUserAgent(userAgent);
@@ -57,7 +57,7 @@ public class DefaultSessionManager implements SessionManager {
                 // create new session in the database
                 currentSession = sessionDao.saveSession(currentSession);
             } catch (DatabaseException e) { // it happend database error
-                throw new SessionChangeDatabaseException(e);
+                throw new SessionDataChangeException(e);
             }
         } else { // the session already exists
             throw new SessionExistsException();
@@ -65,7 +65,7 @@ public class DefaultSessionManager implements SessionManager {
         return currentSession;
     }
 
-    public boolean destroy() throws SessionNotExistsException {
+    public boolean destroy() throws SessionDataChangeException, SessionNotExistsException {
         boolean ok = false;
         // we can destroy this session if this exists
         if (currentSession != null) {
@@ -78,7 +78,7 @@ public class DefaultSessionManager implements SessionManager {
                 }
 
             } catch (DatabaseException e) { // catch the database error
-                ok = false;
+                throw new SessionDataChangeException(e);
             }
 
             // if the destroy proccess was unsuccesful then we have to reset

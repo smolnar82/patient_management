@@ -83,9 +83,6 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     }
 
-    // used date format
-    public static final String DATE_FORMAT = "YYYY-MM-dd HH:mm:ss";
-
     private static final String SQL_INSERT_APPOINTMENT = "INSERT INTO "
             + "appointment_table (doctor_id, patient_id, appointment, description, sid) " + "VALUES (?, ?, ?, ?, ?);";
 
@@ -102,7 +99,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
             + "u2.email AS patient_email," + "u2.active AS patient_active " + "FROM appointment_table at "
             + "INNER JOIN users u1 ON (u1.id = at.doctor_id) " + "INNER JOIN users u2 ON (u2.id = at.patient_id) "
             + "LEFT JOIN appointment_notes an ON (an.appointment_id = at.id) " + " WHERE $1$ "
-            + "GROUP BY at.id, u1.id, u2.id;";
+            + "GROUP BY at.id, u1.id, u2.id "
+            + "ORDER BY at.appointment ASC;";
 
     private static final String SQL_DELETE_APPOINTMENT = "DELETE FROM appointment_table WHERE id = ?;";
 
@@ -158,10 +156,10 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
         // check the user type so we can filter(doctor or patient
         // appointment).
-        if (userFactory.isDoctor(user)) {
-            text.append("at.doctor_id = ?");
-        } else if (userFactory.isPatient(user)) {
+        if (userFactory.isPatient(user)) {
             text.append("at.patient_id = ?");
+        } else {
+            text.append("at.doctor_id = ?");
         }
 
         // date filter from if it is necessary
@@ -273,6 +271,7 @@ public class JDBCAppointmentDao implements AppointmentDao {
         }
 
         if (num > 0) {
+            ok = true;
             // delete and resave the notes
             if (appointment.getNotes() != null) {
                 // delete old notes
