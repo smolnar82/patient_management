@@ -12,6 +12,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * This is the settings of h2 database.
@@ -23,6 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Configuration
 @ComponentScan(basePackages = { "hu.kuncystem.patient.dao" })
+@EnableTransactionManagement
 public class H2Config {
 
     @Bean
@@ -43,7 +45,7 @@ public class H2Config {
         return new JdbcTemplate(ds);
     }
 
-    @Bean
+    @Bean(name = "txManager")
     public PlatformTransactionManager transactionManager(DataSource ds) {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(ds);

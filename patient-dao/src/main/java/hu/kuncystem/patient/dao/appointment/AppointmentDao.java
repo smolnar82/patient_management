@@ -3,6 +3,7 @@ package hu.kuncystem.patient.dao.appointment;
 import java.util.Date;
 import java.util.List;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.appointment.Appointment;
 import hu.kuncystem.patient.pojo.user.User;
 
@@ -23,8 +24,10 @@ public interface AppointmentDao {
      *            Object.Appointment is a simple POJO object. This object
      *            contains the data which we have to delete.
      * @return It will return true for success otherwise it will return false.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public boolean deleteAppointment(Appointment appointment);
+    public boolean deleteAppointment(Appointment appointment) throws DatabaseException;
 
     /**
      * Get one row from the database.
@@ -32,8 +35,10 @@ public interface AppointmentDao {
      * @param id
      *            The unique row identification of appointment
      * @return Object.Appointment is a simple POJO object.
+     * @throws DatabaseException
+     *             if the query fails
      */
-    public Appointment getAppointment(long id);
+    public Appointment getAppointment(long id) throws DatabaseException;
 
     /**
      * Get more rows from database. These rows contain the appointment of the
@@ -47,9 +52,11 @@ public interface AppointmentDao {
      *            open.
      * @param dateTo
      *            End of filter date. If this is null then the end date is open.
-     * @return Object.List object that it is contain Appointment objects.
+     * @return Object.List object that it is contain Appointment objects.4
+     * @throws DatabaseException
+     *             if the query fails
      */
-    public List<Appointment> getAppointments(User user, Date dateFrom, Date dateTo);
+    public List<Appointment> getAppointments(User user, Date dateFrom, Date dateTo) throws DatabaseException;
 
     /**
      * Insert new appointment into the database.
@@ -57,9 +64,12 @@ public interface AppointmentDao {
      * @param appointment
      *            Object.Appointment is a simple POJO object.
      * @return Object.Appointment is a simple POJO object. This object contains
-     *         the unique id, too.
+     *         the unique id, too. It will return null if the save of notes was
+     *         unsuccess.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public Appointment saveAppointment(Appointment appointment);
+    public Appointment saveAppointment(Appointment appointment) throws DatabaseException;
 
     /**
      * Update one appointment row in the database.
@@ -68,6 +78,8 @@ public interface AppointmentDao {
      *            Object.Appointment is a simple POJO object. This object
      *            contains the data which we have to modify.
      * @return It will return true for success otherwise it will return false.
+     * @throws DatabaseException
+     *             if there is any problem issuing the update
      */
-    public boolean updateAppointment(Appointment appointment);
+    public boolean updateAppointment(Appointment appointment) throws DatabaseException;
 }

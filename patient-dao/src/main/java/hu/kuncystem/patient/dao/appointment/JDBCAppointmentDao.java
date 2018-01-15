@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -19,6 +20,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.appointment.Appointment;
 import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.pojo.user.UserFactory;
@@ -112,71 +114,80 @@ public class JDBCAppointmentDao implements AppointmentDao {
     @Autowired
     private JdbcOperations jdbc;
 
-    public boolean deleteAppointment(Appointment appointment) {
+    public boolean deleteAppointment(Appointment appointment) throws DatabaseException {
         try {
             // delete appointment notes if these are exists
             jdbc.update(SQL_DELETE_APPOINTMENT_NOTES, appointment.getId());
-
+        } catch (DataAccessException e) {
+            throw new DatabaseException(
+                    DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_DELETE_APPOINTMENT_NOTES, e);
+        }
+        try {
             // delete appointment
             if (jdbc.update(SQL_DELETE_APPOINTMENT, appointment.getId()) == 0) {
                 // not found the appointment by id
                 return false;
+            } else {
+                return true;
             }
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            return false;
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_DELETE_APPOINTMENT,
+                    e);
         }
-        return true;
+
     }
 
-    public Appointment getAppointment(long id) {
+    public Appointment getAppointment(long id) throws DatabaseException {
         // replace the joker characters to concrete sql
         String sql = SQL_SELECT_APPOINTMENT.replace("$1$", "at.id = ?");
+        Appointment appointment = null;
         try {
-            return jdbc.queryForObject(sql, new AppointmentRowMapper(), id);
+            appointment = jdbc.queryForObject(sql, new AppointmentRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            appointment = new Appointment();
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            return null;
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + sql, e);
         }
+        return appointment;
     }
 
-    public List<Appointment> getAppointments(User user, Date dateFrom, Date dateTo) {
+    public List<Appointment> getAppointments(User user, Date dateFrom, Date dateTo) throws DatabaseException {
+
+        StringBuilder text = new StringBuilder();
+        UserFactory userFactory = new UserFactory();
+
+        // check the user type so we can filter(doctor or patient
+        // appointment).
+        if (userFactory.isDoctor(user)) {
+            text.append("at.doctor_id = ?");
+        } else if (userFactory.isPatient(user)) {
+            text.append("at.patient_id = ?");
+        }
+
+        // date filter from if it is necessary
+        if (dateFrom != null) {
+            if (text.length() > 0) {
+                text.append(" AND");
+            }
+            text.append(" at.appointment >= '" + new SimpleDateFormat(DATE_FORMAT).format(dateFrom) + "'");
+        }
+        // date filter to if it is necessary
+        if (dateTo != null) {
+            if (text.length() > 0) {
+                text.append(" AND");
+            }
+            text.append(" at.appointment <= '" + new SimpleDateFormat(DATE_FORMAT).format(dateTo) + "'");
+        }
+        // replace the joker characters to concrete sql
+        String sql = SQL_SELECT_APPOINTMENT.replace("$1$", text);
         try {
-            StringBuilder text = new StringBuilder();
-            UserFactory userFactory = new UserFactory();
-
-            // check the user type so we can filter(doctor or patient
-            // appointment).
-            if (userFactory.isDoctor(user)) {
-                text.append("at.doctor_id = ?");
-            } else if (userFactory.isPatient(user)) {
-                text.append("at.patient_id = ?");
-            }
-
-            // date filter from if it is necessary
-            if (dateFrom != null) {
-                if (text.length() > 0) {
-                    text.append(" AND");
-                }
-                text.append(" at.appointment >= '" + new SimpleDateFormat(DATE_FORMAT).format(dateFrom) + "'");
-            }
-            // date filter to if it is necessary
-            if (dateTo != null) {
-                if (text.length() > 0) {
-                    text.append(" AND");
-                }
-                text.append(" at.appointment <= '" + new SimpleDateFormat(DATE_FORMAT).format(dateTo) + "'");
-            }
-            // replace the joker characters to concrete sql
-            String sql = SQL_SELECT_APPOINTMENT.replace("$1$", text);
             return jdbc.query(sql, new AppointmentRowMapper(), user.getId());
         } catch (DataAccessException e) {
-            e.printStackTrace();
-            return null;
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + sql, e);
         }
     }
 
-    public Appointment saveAppointment(final Appointment appointment) {
+    public Appointment saveAppointment(final Appointment appointment) throws DatabaseException {
         KeyHolder holder = new GeneratedKeyHolder();
         int rows = 0;
         try {
@@ -195,7 +206,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
                 }
             }, holder);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_INSERT_APPOINTMENT,
+                    e);
         }
         if (rows > 0) {
             appointment.setId(holder.getKey().longValue());
@@ -205,8 +217,10 @@ public class JDBCAppointmentDao implements AppointmentDao {
             } else {
                 return appointment;
             }
+        } else {
+            appointment.setId(0);
         }
-        return null;
+        return appointment;
     }
 
     /**
@@ -245,27 +259,35 @@ public class JDBCAppointmentDao implements AppointmentDao {
         return true;
     }
 
-    public boolean updateAppointment(Appointment appointment) {
+    public boolean updateAppointment(Appointment appointment) throws DatabaseException {
         boolean ok = false;
+        int num = 0;
 
         try {
             // first update the row of appointment
-            int num = jdbc.update(SQL_UPDATE, appointment.getDoctor().getId(), appointment.getPatient().getId(),
+            num = jdbc.update(SQL_UPDATE, appointment.getDoctor().getId(), appointment.getPatient().getId(),
                     new SimpleDateFormat(DATE_FORMAT).format(appointment.getTimet()), appointment.getDescription(),
                     appointment.getId());
-            if (num > 0) {
-                // delete and resave the notes
-                if (appointment.getNotes() != null) {
-                    // delete old notes
-                    jdbc.update(SQL_DELETE_APPOINTMENT_NOTES, appointment.getId());
-
-                    // add new notes
-                    ok = saveAppointmentNote(appointment.getId(), appointment.getNotes(), appointment.getSidid());
-                }
-            } // otherwise the update was unsuccessful
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_UPDATE, e);
         }
+
+        if (num > 0) {
+            // delete and resave the notes
+            if (appointment.getNotes() != null) {
+                // delete old notes
+                try {
+                    jdbc.update(SQL_DELETE_APPOINTMENT_NOTES, appointment.getId());
+                } catch (DataAccessException e) {
+                    throw new DatabaseException(
+                            DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_DELETE_APPOINTMENT_NOTES, e);
+                }
+
+                // add new notes
+                ok = saveAppointmentNote(appointment.getId(), appointment.getNotes(), appointment.getSidid());
+            }
+        } // otherwise the update was unsuccessful
+
         return ok;
     }
 
