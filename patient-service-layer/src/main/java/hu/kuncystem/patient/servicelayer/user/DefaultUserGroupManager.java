@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import hu.kuncystem.patient.dao.exception.DatabaseException;
@@ -19,6 +20,7 @@ import hu.kuncystem.patient.pojo.user.UserGroup;
  * @version 1.0
  */
 @Service
+@Scope("prototype")
 public class DefaultUserGroupManager implements UserGroupManager {
     @Autowired
     @Qualifier(value = "JDBCUserGroupDao")

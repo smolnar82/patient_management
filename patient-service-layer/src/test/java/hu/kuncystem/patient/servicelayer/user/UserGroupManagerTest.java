@@ -32,62 +32,64 @@ import hu.kuncystem.patient.servicelayer.utilities.Hash;
 @ActiveProfiles("live")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserGroupManagerTest {
+    private static UserGroup group;
+
+    private static User user;
+
     @Autowired
     private UserGroupManager userGroupManager;
 
     @Autowired
     private UserManager userManager;
-    
-    private static UserGroup group;
-    
-    private static User user;
-    
+
     @Test
-    public void stage1_schouldCreateUserGroupSuccessfully(){
+    public void stage1_schouldCreateUserGroupSuccessfully() {
         group = userGroupManager.createGroup("Group1", "note of test group");
         assertTrue("create of new group failed", group.getId() > 0);
     }
-    
+
     @Test
-    public void stage2_shouldCreateUserSuccessfullyWhenUserDidNotExists(){
+    public void stage2_shouldCreateUserSuccessfullyWhenUserDidNotExists() {
         user = userManager.getUser("Teszt User", Hash.MD5("abcd1234"));
-        if(user.getId() == 0){
+        if (user.getId() == 0) {
             user = userManager.createUser("Teszt User", Hash.MD5("123456"), true);
             assertNotNull(user);
             assertTrue("create of new user failed", user.getId() > 0);
-        }else{
+        } else {
             fail("The user already exsits!");
         }
     }
-    
+
     @Test
-    public void stage3_schouldCreateNewRelationWhenDidNotExists(){
+    public void stage3_schouldCreateNewRelationWhenDidNotExists() {
         boolean match = false;
-        //get all group by user
+        // get all group by user
         List<UserGroup> groupList = userGroupManager.getGroupOfUser(user.getId());
-        for(UserGroup userGroup: groupList){
-            if(userGroup.getId() == group.getId()){     //check, does the relation(user and group) exists
+        for (UserGroup userGroup : groupList) {
+            if (userGroup.getId() == group.getId()) { // check, does the
+                                                      // relation(user and
+                                                      // group) exists
                 match = true;
                 break;
             }
         }
-        
-        if(!match){         //not exists
+
+        if (!match) { // not exists
             assertTrue("create of user and group relation failed",
                     userGroupManager.saveRelation(user.getId(), group.getId()));
-        }else{              //already exists
+        } else { // already exists
             fail("This relation already exists!");
         }
     }
-    
+
     @Test
-    public void stage4_schouldGetListOfUserByGroupId(){
+    public void stage4_schouldGetListOfUserByGroupId() {
         List<User> userList = userGroupManager.getUsersFromGroup(group.getId());
-        assertTrue("User list not found by group id", userList.size() > 0); 
+        assertTrue("User list not found by group id", userList.size() > 0);
     }
-    
+
     @Test
-    public void stage5_schouldGetDataOfGroupById(){
+    public void stage5_schouldGetDataOfGroupById() {
         UserGroup group1 = userGroupManager.getGroup(group.getId());
         assertTrue("Get data of group failed", group.getId() == group1.getId());
     }
