@@ -44,14 +44,14 @@ public class H2Config {
         ds.setUser("admin");
         ds.setPassword("12345678");
 
-        ResourceLoader rsLoader = new DefaultResourceLoader();
+        /*ResourceLoader rsLoader = new DefaultResourceLoader();
         EncodedResource encodedScript = new EncodedResource(rsLoader.getResource("schema.sql"));
         ScriptUtils.executeSqlScript(ds.getConnection(), encodedScript, false, false,
                 ScriptUtils.DEFAULT_COMMENT_PREFIX, ScriptUtils.DEFAULT_STATEMENT_SEPARATOR,
                 ScriptUtils.DEFAULT_BLOCK_COMMENT_START_DELIMITER, ScriptUtils.DEFAULT_BLOCK_COMMENT_END_DELIMITER);
   
 
-        System.out.println("datasource from disk: " + ds.getURL() + " - " + ds.getUrl());
+        System.out.println("datasource from disk: " + ds.getURL() + " - " + ds.getUrl());*/
         return ds;
     }
 
