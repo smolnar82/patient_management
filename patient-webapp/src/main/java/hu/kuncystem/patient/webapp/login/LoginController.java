@@ -1,4 +1,4 @@
-package hu.kuncystem.patient.webapp.controller;
+package hu.kuncystem.patient.webapp.login;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLoginPage() {
-        return "login";
+        return "logi";
     }
     
     @RequestMapping(value = "/login", method = RequestMethod.POST)
