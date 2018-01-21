@@ -10,7 +10,7 @@
 
 	<context-param>
 		<param-name>spring.profiles.active</param-name>
-		<param-value>liveOnDisk</param-value>
+		<param-value>liveH2OnDisk</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>

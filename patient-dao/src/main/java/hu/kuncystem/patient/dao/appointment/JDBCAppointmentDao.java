@@ -99,8 +99,7 @@ public class JDBCAppointmentDao implements AppointmentDao {
             + "u2.email AS patient_email," + "u2.active AS patient_active " + "FROM appointment_table at "
             + "INNER JOIN users u1 ON (u1.id = at.doctor_id) " + "INNER JOIN users u2 ON (u2.id = at.patient_id) "
             + "LEFT JOIN appointment_notes an ON (an.appointment_id = at.id) " + " WHERE $1$ "
-            + "GROUP BY at.id, u1.id, u2.id "
-            + "ORDER BY at.appointment ASC;";
+            + "GROUP BY at.id, u1.id, u2.id " + "ORDER BY at.appointment ASC;";
 
     private static final String SQL_DELETE_APPOINTMENT = "DELETE FROM appointment_table WHERE id = ?;";
 
