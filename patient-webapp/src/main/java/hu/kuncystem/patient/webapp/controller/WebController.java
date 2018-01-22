@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *  
  * @version 1.0
  */
-@Controller
+/*@Controller
 public class WebController {
     
     @RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -23,4 +23,4 @@ public class WebController {
         }
         return page;
     }
-}
+}*/

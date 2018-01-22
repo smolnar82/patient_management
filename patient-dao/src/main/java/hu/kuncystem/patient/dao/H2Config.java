@@ -51,6 +51,7 @@ public class H2Config {
         ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
         databasePopulator.setContinueOnError(true);
         databasePopulator.addScript(new ClassPathResource("schema.sql"));
+        databasePopulator.addScript(new ClassPathResource("default_data.sql"));
         return databasePopulator;
     }
 
