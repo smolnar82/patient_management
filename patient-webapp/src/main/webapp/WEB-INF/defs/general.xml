@@ -16,4 +16,9 @@
 		<put-attribute name="title" value="PatientManagement" />
 		<put-attribute name="body" value="/WEB-INF/view/index.jsp" />
 	</definition>
+	
+	<definition name="403" extends="common">
+		<put-attribute name="title" value="PatientManagement" />
+		<put-attribute name="body" value="/WEB-INF/view/errors/403.jsp" />
+	</definition>
 </tiles-definitions>

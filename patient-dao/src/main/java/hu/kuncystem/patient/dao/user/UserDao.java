@@ -48,6 +48,18 @@ public interface UserDao {
      *             if the query fails
      */
     public User getUser(String name, String password) throws DatabaseException;
+    
+    /**
+     * Get one row from the database. Both parameters together identify one user
+     * in the database.
+     *
+     * @param name
+     *            This is the user's name.
+     * @return Object.User is a simple POJO object.
+     * @throws DatabaseException
+     *             if the query fails
+     */
+    public User getUser(String name) throws DatabaseException;
 
     /**
      * Insert new user into the database.

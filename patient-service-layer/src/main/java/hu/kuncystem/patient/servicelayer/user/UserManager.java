@@ -69,6 +69,17 @@ public interface UserManager {
      *         null if the user isn't found in the database.
      */
     public User getUser(String name, String password);
+    
+    /**
+     * Get one user's data from the database. The name and the password can
+     * identify one row, too.
+     *
+     * @param name
+     *            This is the user's name.
+     * @return Object.User object is a simple POJO object. This method return
+     *         null if the user isn't found in the database.
+     */
+    public User getUser(String name);
 
     /**
      * Delete one row from the database.

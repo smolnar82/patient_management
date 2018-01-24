@@ -1,6 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<parent>
 		<groupId>hu.kuncystem.patient.master</groupId>
 		<artifactId>patient-management</artifactId>
@@ -9,27 +8,11 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>hu.kuncystem.patient</groupId>
-	<artifactId>patient-service-layer</artifactId>
+	<artifactId>patient-pojo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencies>
-
-		<dependency>
-			<groupId>hu.kuncystem.patient</groupId>
-			<artifactId>patient-dao</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>5.0.0.RELEASE</version>
-		</dependency>
-
-	</dependencies>
 </project>

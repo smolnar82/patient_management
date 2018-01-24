@@ -3,6 +3,9 @@ package hu.kuncystem.patient.servicelayer.utilities;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 /**
  * This class contains some security methods.
  *
@@ -40,5 +43,10 @@ public class Hash {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public static final String BCrypt(String text){
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(text);
     }
 }

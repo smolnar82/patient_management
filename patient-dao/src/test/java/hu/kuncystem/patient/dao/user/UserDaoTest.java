@@ -71,6 +71,13 @@ public class UserDaoTest {
         user = userDao.getUser(user.getId());
         assertEquals("test1@domain.com", user.getEmail());
     }
+    
+    @Test
+    public void stage31_schouldGetUserIfExsitsByName() {
+        // get user by name
+        user = userDao.getUser("teszt");
+        assertNotNull(user);
+    }
 
     @Test
     public void stage4_schouldGetUserDataWhenUserExsitsByNameAndPassword() {

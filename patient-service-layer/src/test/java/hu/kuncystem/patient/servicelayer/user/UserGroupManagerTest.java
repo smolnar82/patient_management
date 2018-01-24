@@ -51,7 +51,7 @@ public class UserGroupManagerTest {
     @Test
     public void stage2_shouldCreateUserSuccessfullyWhenUserDidNotExists() {
         user = userManager.getUser("Teszt User", Hash.MD5("abcd1234"));
-        if (user.getId() == 0) {
+        if (user == null) {
             user = userManager.createUser("Teszt User", Hash.MD5("123456"), true);
             assertNotNull(user);
             assertTrue("create of new user failed", user.getId() > 0);

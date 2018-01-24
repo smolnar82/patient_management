@@ -1,11 +1,11 @@
 -- ------------------------------------------------------------
--- This table content all users who can be use this system. Here are all doctors and all patient. All users are in one or more group. These groups represent that who is doctor or patient.
+-- This table contains all users who can use this system. Here are all doctors and all patient. All users are in one or more group. These groups represent that who is the doctor or the patient.
 -- ------------------------------------------------------------
 
 CREATE TABLE users (
   id SERIAL  NOT NULL ,
   user_name VARCHAR(45)   NOT NULL ,
-  passw VARCHAR(40)   NOT NULL ,
+  passw VARCHAR(70)   NOT NULL ,
   fullname VARCHAR(255)    ,
   email VARCHAR(128)    ,
   active BOOL  DEFAULT false NOT NULL ,
@@ -14,8 +14,7 @@ PRIMARY KEY(id)      );
 
 
 CREATE INDEX users_index1112 ON users (created_date);
-CREATE INDEX users_index1186 ON users (user_name);
-CREATE UNIQUE INDEX udx_users_index1232 ON users (user_name, passw);
+CREATE UNIQUE INDEX udx_users_index1232 ON users (user_name);
 
 
 
@@ -27,7 +26,7 @@ CREATE UNIQUE INDEX udx_users_index1232 ON users (user_name, passw);
 
 
 -- ------------------------------------------------------------
--- This table content the all users groups. These groups represent the permissions and that what kind of functions are available.
+-- This table contains all users groups. These groups represent the permissions and what kind of functions are available.
 -- ------------------------------------------------------------
 
 CREATE TABLE user_group (
@@ -66,7 +65,7 @@ CREATE INDEX IFK_rel_users_session ON session_list (user_id);
 
 
 -- ------------------------------------------------------------
--- In this table can be define that the user is doctor or patient. Of course can be create another groups relation, too.
+-- In this table can define that the user is a doctor or a patient. Of course, we can create another groups relation, too.
 -- ------------------------------------------------------------
 
 CREATE TABLE user_group_relation (
@@ -92,7 +91,7 @@ CREATE INDEX IFK_rel_user_group_group_relat ON user_group_relation (user_group_i
 
 
 -- ------------------------------------------------------------
--- This is a schedule table. Here can be recorded when the doctor will meet with patient.
+-- This is a schedule table. Here can recorded when the doctor will meet with patient.
 -- ------------------------------------------------------------
 
 CREATE TABLE appointment_table (

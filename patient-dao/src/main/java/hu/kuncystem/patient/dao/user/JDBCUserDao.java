@@ -66,6 +66,11 @@ public class JDBCUserDao implements UserDao {
             + "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
             + "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
             + "WHERE u.user_name = ? AND u.passw = ?;";
+    
+    private static final String SQL_FIND_BY_NAME = "SELECT " + "u.*, COALESCE(ug.name,'') AS group_name " + "FROM users u "
+            + "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
+            + "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
+            + "WHERE u.user_name = ?;";
 
     private static final String SQL_INSERT = "INSERT INTO users (user_name, passw, fullname, email) VALUES (?, ?, ?, ?);";
 
@@ -86,29 +91,33 @@ public class JDBCUserDao implements UserDao {
     }
 
     public User getUser(long id) throws DatabaseException {
-        User user = null;
         try {
-            user = jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
+            return jdbc.queryForObject(SQL_FIND_BY_ID, new UserRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            UserFactory userFactory = new UserFactory();
-            user = userFactory.getUser(UserFactory.DEFAULT);
+            return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
         }
-        return user;
+    }
+    
+    public User getUser(String name) throws DatabaseException {
+        try {
+            return jdbc.queryForObject(SQL_FIND_BY_NAME, new UserRowMapper(), name);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        } catch (DataAccessException e) {
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_NAME, e);
+        }
     }
 
     public User getUser(String name, String password) throws DatabaseException {
-        User user = null;
         try {
-            user = jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
+            return jdbc.queryForObject(SQL_FIND, new UserRowMapper(), name, password);
         } catch (EmptyResultDataAccessException e) {
-            UserFactory userFactory = new UserFactory();
-            user = userFactory.getUser(UserFactory.DEFAULT);
+            return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND, e);
         }
-        return user;
     }
 
     public User saveUser(final User user) throws DatabaseException {
