@@ -63,7 +63,7 @@ public class UserManagerTest {
     public void stage3_schouldDeleteUserSuccessfulyWhenUserExists() {
         user = userManager.getUser("user1");
         assertNotNull(user);
-        
+
         assertTrue("removeUser:65 > delete user failed", userManager.removeUser(user.getId()));
     }
 }

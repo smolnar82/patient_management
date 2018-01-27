@@ -29,9 +29,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
-        
-        //new PlaintextPasswordEncoder();
-        //auth.inMemoryAuthentication().withUser("root").password("{noop}123456").roles("USER", "ADMIN");
     }
 
     public DaoAuthenticationProvider authenticationProvider() {
@@ -43,9 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /*http.authorizeRequests().antMatchers("/login").permitAll()
-            .antMatchers("/", "/index").access("hasRole('USER')").and().formLogin();*/
-       
         http.authorizeRequests().antMatchers("/login").permitAll();
         http.authorizeRequests().antMatchers("/", "/index")
             .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')")

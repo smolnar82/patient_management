@@ -66,9 +66,9 @@ public class JDBCUserDao implements UserDao {
             + "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
             + "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
             + "WHERE u.user_name = ? AND u.passw = ?;";
-    
-    private static final String SQL_FIND_BY_NAME = "SELECT " + "u.*, COALESCE(ug.name,'') AS group_name " + "FROM users u "
-            + "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
+
+    private static final String SQL_FIND_BY_NAME = "SELECT " + "u.*, COALESCE(ug.name,'') AS group_name "
+            + "FROM users u " + "LEFT JOIN user_group_relation ugr ON (ugr.users_id = u.id)"
             + "LEFT JOIN user_group ug ON (ug.id = ugr.user_group_id AND ug.name IN ('Patient','Doctor'))"
             + "WHERE u.user_name = ?;";
 
@@ -99,7 +99,7 @@ public class JDBCUserDao implements UserDao {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
         }
     }
-    
+
     public User getUser(String name) throws DatabaseException {
         try {
             return jdbc.queryForObject(SQL_FIND_BY_NAME, new UserRowMapper(), name);
@@ -144,7 +144,7 @@ public class JDBCUserDao implements UserDao {
         if (rows == 1) {
             user.setId(holder.getKey().longValue());
         } else {
-            user.setId(0);
+            return null;
         }
         return user;
     }

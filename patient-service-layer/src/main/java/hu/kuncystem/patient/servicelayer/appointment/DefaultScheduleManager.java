@@ -225,7 +225,7 @@ public class DefaultScheduleManager implements ScheduleManager {
 
         boolean ok = false;
         Appointment appointment = this.getAppointment(appointmentId);
-        if (appointment.getId() == 0) {
+        if (appointment == null) {
             throw new AppointmentNotExistsException();
         } else {
 

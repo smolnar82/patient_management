@@ -86,15 +86,13 @@ public class JDBCUserGroupDao implements UserGroupDao {
     }
 
     public UserGroup getUserGroup(long id) throws DatabaseException {
-        UserGroup group = null;
         try {
-            group = jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
+            return jdbc.queryForObject(SQL_FIND_GROUP_BY_ID, new UserGroupRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            group = new UserGroup();
+            return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_GROUP_BY_ID, e);
         }
-        return group;
     }
 
     public UserGroup saveUserGroup(final UserGroup group) throws DatabaseException {
@@ -119,7 +117,7 @@ public class JDBCUserGroupDao implements UserGroupDao {
         if (rows == 1) {
             group.setId(holder.getKey().longValue());
         } else {
-            group.setId(0);
+            return null;
         }
         return group;
     }

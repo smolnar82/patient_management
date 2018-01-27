@@ -63,7 +63,7 @@ public class DefaultUserManager implements UserManager {
     public User getUser(String name) {
         return userDao.getUser(name);
     }
-    
+
     public User getUser(String name, String password) {
         return userDao.getUser(name, password);
     }

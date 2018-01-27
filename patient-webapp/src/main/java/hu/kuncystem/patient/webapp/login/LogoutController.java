@@ -29,7 +29,7 @@ public class LogoutController {
             request.getSession().invalidate();
         }
        
-        return "redirect:/";
+        return "redirect:/login?logout";
     }
 
 }
