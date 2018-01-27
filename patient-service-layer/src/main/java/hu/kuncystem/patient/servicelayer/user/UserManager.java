@@ -63,6 +63,17 @@ public interface UserManager {
      *
      * @param name
      *            This is the user's name.
+     * @return Object.User object is a simple POJO object. This method return
+     *         null if the user isn't found in the database.
+     */
+    public User getUser(String name);
+
+    /**
+     * Get one user's data from the database. The name and the password can
+     * identify one row, too.
+     *
+     * @param name
+     *            This is the user's name.
      * @param password
      *            This is the user's password.
      * @return Object.User object is a simple POJO object. This method return

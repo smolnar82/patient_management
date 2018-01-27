@@ -99,8 +99,7 @@ public class JDBCAppointmentDao implements AppointmentDao {
             + "u2.email AS patient_email," + "u2.active AS patient_active " + "FROM appointment_table at "
             + "INNER JOIN users u1 ON (u1.id = at.doctor_id) " + "INNER JOIN users u2 ON (u2.id = at.patient_id) "
             + "LEFT JOIN appointment_notes an ON (an.appointment_id = at.id) " + " WHERE $1$ "
-            + "GROUP BY at.id, u1.id, u2.id "
-            + "ORDER BY at.appointment ASC;";
+            + "GROUP BY at.id, u1.id, u2.id " + "ORDER BY at.appointment ASC;";
 
     private static final String SQL_DELETE_APPOINTMENT = "DELETE FROM appointment_table WHERE id = ?;";
 
@@ -138,15 +137,13 @@ public class JDBCAppointmentDao implements AppointmentDao {
     public Appointment getAppointment(long id) throws DatabaseException {
         // replace the joker characters to concrete sql
         String sql = SQL_SELECT_APPOINTMENT.replace("$1$", "at.id = ?");
-        Appointment appointment = null;
         try {
-            appointment = jdbc.queryForObject(sql, new AppointmentRowMapper(), id);
+            return jdbc.queryForObject(sql, new AppointmentRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            appointment = new Appointment();
+            return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + sql, e);
         }
-        return appointment;
     }
 
     public List<Appointment> getAppointments(User user, Date dateFrom, Date dateTo) throws DatabaseException {
@@ -216,9 +213,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
                 return appointment;
             }
         } else {
-            appointment.setId(0);
+            return null;
         }
-        return appointment;
     }
 
     /**

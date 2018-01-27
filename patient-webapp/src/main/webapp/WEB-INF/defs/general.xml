@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="common" template="/WEB-INF/layout/classic.jsp">
+		<put-attribute name="footer" value="/WEB-INF/layout/footer.jsp" />
+	</definition>
+	
+	<definition name="login" extends="common">
+		<put-attribute name="title" value="PatientManagement: Login" />
+		<put-attribute name="body" value="/WEB-INF/view/login.jsp" />
+	</definition>
+	
+	<definition name="index" extends="common">
+		<put-attribute name="title" value="PatientManagement" />
+		<put-attribute name="body" value="/WEB-INF/view/index.jsp" />
+	</definition>
+	
+	<definition name="403" extends="common">
+		<put-attribute name="title" value="PatientManagement" />
+		<put-attribute name="body" value="/WEB-INF/view/errors/403.jsp" />
+	</definition>
+</tiles-definitions>

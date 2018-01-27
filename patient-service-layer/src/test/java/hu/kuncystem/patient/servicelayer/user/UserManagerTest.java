@@ -37,7 +37,7 @@ public class UserManagerTest {
     @Test
     public void stage1_shouldCreateUserSuccessfullyWhenUserDidNotExists() {
         user = userManager.getUser("user1", Hash.MD5("abcd1234"));
-        if (user.getId() == 0) {
+        if (user == null) {
             user = userManager.createUser("user1", Hash.MD5("123456"), true);
             assertNotNull(user);
             assertTrue("create of new user failed", user.getId() > 0);
@@ -61,6 +61,9 @@ public class UserManagerTest {
 
     @Test
     public void stage3_schouldDeleteUserSuccessfulyWhenUserExists() {
+        user = userManager.getUser("user1");
+        assertNotNull(user);
+
         assertTrue("removeUser:65 > delete user failed", userManager.removeUser(user.getId()));
     }
 }

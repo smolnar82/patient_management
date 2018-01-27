@@ -59,15 +59,13 @@ public class JDBCSessionDao implements SessionDao {
     private JdbcOperations jdbc;
 
     public Session getSession(long sessionId) throws DatabaseException {
-        Session session = null;
         try {
-            session = jdbc.queryForObject(SQL_FIND_BY_ID, new SessionRowMapper(), sessionId);
+            return jdbc.queryForObject(SQL_FIND_BY_ID, new SessionRowMapper(), sessionId);
         } catch (EmptyResultDataAccessException e) {
-            session = new Session();
+            return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
         }
-        return session;
     }
 
     public Session saveSession(final Session session) throws DatabaseException {
@@ -94,7 +92,7 @@ public class JDBCSessionDao implements SessionDao {
         if (rows == 1) {
             session.setId(holder.getKey().longValue());
         } else {
-            session.setId(0);
+            return null;
         }
         return session;
     }

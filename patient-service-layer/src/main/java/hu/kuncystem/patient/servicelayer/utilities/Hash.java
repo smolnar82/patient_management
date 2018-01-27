@@ -3,6 +3,9 @@ package hu.kuncystem.patient.servicelayer.utilities;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 /**
  * This class contains some security methods.
  *
@@ -12,6 +15,21 @@ import java.security.NoSuchAlgorithmException;
  * @version 1.0
  */
 public class Hash {
+    /**
+     * Create bcrypt hash string from normal string.<br />
+     * <b>details:</b> https://en.wikipedia.org/wiki/Bcrypt
+     * 
+     * @param text
+     *            A string which we want to convert
+     * 
+     * @return It will return bcrypted string for success otherwise it will
+     *         return null.
+     */
+    public static final String BCrypt(String text) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(text);
+    }
+
     /**
      * Create md5 hash string from normal string.<br />
      * <b>source:</b>
