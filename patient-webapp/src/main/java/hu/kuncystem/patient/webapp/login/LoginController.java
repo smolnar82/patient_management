@@ -2,9 +2,9 @@ package hu.kuncystem.patient.webapp.login;
 
 import java.security.Principal;
 
-import org.apache.log4j.Logger;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * this for comment of classes
+ * This class control the process of login.
  *
  * @author Csaba Kun <kuncy88@gmail.com>
  * @date 2018. jan. 16.
@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class LoginController {
+    @Autowired
+    private MessageSource messageSource;
+    
     @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index() {
         return "index";
@@ -39,12 +42,15 @@ public class LoginController {
         if (principal != null) {
             return "redirect:/";
         } else {
+            String text;
             if (error != null) {
-                model.put("error", "Invalid username and password!");
+                text = messageSource.getMessage("message.bad_auth_data", null, LocaleContextHolder.getLocale());
+                model.put("error", text);
             }
 
             if (logout != null) {
-                model.put("error", "You've been logged out successfully.");
+                text = messageSource.getMessage("message.login_success", null, LocaleContextHolder.getLocale());
+                model.put("error", text);
             }
 
             return "login";
