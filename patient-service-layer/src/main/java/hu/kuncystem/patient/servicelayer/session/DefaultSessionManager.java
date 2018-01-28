@@ -1,5 +1,7 @@
 package hu.kuncystem.patient.servicelayer.session;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.dao.session.SessionDao;
 import hu.kuncystem.patient.pojo.session.Session;
+import hu.kuncystem.patient.pojo.user.User;
+import hu.kuncystem.patient.pojo.user.UserFactory;
 import hu.kuncystem.patient.servicelayer.exception.SessionDataChangeException;
 import hu.kuncystem.patient.servicelayer.exception.SessionExistsException;
 import hu.kuncystem.patient.servicelayer.exception.SessionNotExistsException;
@@ -81,7 +85,7 @@ public class DefaultSessionManager implements SessionManager {
                 throw new SessionDataChangeException(e);
             }
 
-            // if the destroy proccess was unsuccesful then we have to reset
+            // if the destroy process was unsuccessful then we have to reset
             // this flag
             if (!ok && currentSession.isDisabled()) {
                 currentSession.setDisabled(false);
@@ -95,6 +99,32 @@ public class DefaultSessionManager implements SessionManager {
 
     }
 
+    public boolean destroyAllActiveSession(long userId) {
+        // create default user object
+        UserFactory factory = new UserFactory();
+        User user = factory.getUser(UserFactory.DEFAULT);
+        user.setId(userId);
+
+        // get active user sessions(if there are)
+        List<Session> sessionList = sessionDao.getSession(user, true);
+        if (sessionList.size() > 0) {
+            for (Session session : sessionList) {
+                session.setDisabled(true);
+            }
+            // disabled all active user session
+            try {
+                boolean ok = sessionDao.updateSession(sessionList);
+                if (ok) {
+                    currentSession = null;
+                }
+                return ok;
+            } catch (DatabaseException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public Session getSession() throws SessionNotExistsException {
         if (currentSession != null) {
             return currentSession;
@@ -104,12 +134,11 @@ public class DefaultSessionManager implements SessionManager {
 
     }
 
-    public boolean isEnabled() throws SessionNotExistsException {
+    public boolean isEnabled() {
         if (currentSession != null) {
             return !currentSession.isDisabled();
         } else {
-            throw new SessionNotExistsException();
+            return false;
         }
     }
-
 }

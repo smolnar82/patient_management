@@ -46,6 +46,16 @@ public interface SessionManager {
     public boolean destroy();
 
     /**
+     * Destroy all active user session.
+     * 
+     * @param userId
+     *            This is user id who we want to destroy all session.
+     *
+     * @return It will return true for success otherwise it will return false.
+     */
+    public boolean destroyAllActiveSession(long userId);
+
+    /**
      * Get current the data of session.
      *
      * @return Object.Session is a simple POJO object.
@@ -54,9 +64,10 @@ public interface SessionManager {
 
     /**
      * This method checks that the current session is active or not. If there
-     * isn�t session then this method return false.
+     * isn't session then this method return false.
      *
-     * @return It will return true for success otherwise it will return false.
+     * @return It will return true if the session active otherwise it will
+     *         return false.
      */
     public boolean isEnabled();
 

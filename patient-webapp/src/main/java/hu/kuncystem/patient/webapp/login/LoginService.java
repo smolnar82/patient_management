@@ -17,8 +17,6 @@ import hu.kuncystem.patient.servicelayer.user.UserGroupManager;
 import hu.kuncystem.patient.servicelayer.user.UserManager;
 
 /**
- * this for comment of classes
- *
  * @author Csaba Kun <kuncy88@gmail.com>
  * @date 2018. jan. 22.
  * 

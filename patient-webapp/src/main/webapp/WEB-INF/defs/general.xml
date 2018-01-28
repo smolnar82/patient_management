@@ -8,7 +8,7 @@
 	</definition>
 	
 	<definition name="login" extends="common">
-		<put-attribute name="title" value="PatientManagement: Login" />
+		<put-attribute name="title" value="PatientManagement - Login" />
 		<put-attribute name="body" value="/WEB-INF/view/login.jsp" />
 	</definition>
 	
@@ -20,5 +20,10 @@
 	<definition name="403" extends="common">
 		<put-attribute name="title" value="PatientManagement" />
 		<put-attribute name="body" value="/WEB-INF/view/errors/403.jsp" />
+	</definition>
+	
+	<definition name="message" extends="common">
+		<put-attribute name="title" value="PatientManagement - Message" />
+		<put-attribute name="body" value="/WEB-INF/view/message.jsp" />
 	</definition>
 </tiles-definitions>

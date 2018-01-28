@@ -4,10 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import hu.kuncystem.patient.dao.exception.DatabaseException;
 import hu.kuncystem.patient.pojo.session.Session;
+import hu.kuncystem.patient.pojo.user.User;
 
 /**
  * Create a JDBC dao object which defines standard operations on a data source.
@@ -55,6 +60,8 @@ public class JDBCSessionDao implements SessionDao {
 
     private static final String SQL_FIND_BY_ID = "SELECT * FROM session_list WHERE id = ?;";
 
+    private static final String SQL_FIND_BY_USER = "SELECT * FROM session_list WHERE user_id = ?";
+
     @Autowired
     private JdbcOperations jdbc;
 
@@ -65,6 +72,16 @@ public class JDBCSessionDao implements SessionDao {
             return null;
         } catch (DataAccessException e) {
             throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_FIND_BY_ID, e);
+        }
+    }
+
+    public List<Session> getSession(User user, boolean justActive) {
+        String sql = SQL_FIND_BY_USER + ((justActive) ? " AND NOT disabled;" : ";");
+
+        try {
+            return jdbc.query(sql, new SessionRowMapper(), user.getId());
+        } catch (DataAccessException e) {
+            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + sql, e);
         }
     }
 
@@ -97,14 +114,40 @@ public class JDBCSessionDao implements SessionDao {
         return session;
     }
 
-    public boolean updateSession(Session session) throws DatabaseException {
-        try {
-            int num = jdbc.update(SQL_UPDATE, session.getUserId(), session.getIp(), session.getUserAgent(),
-                    session.isDisabled(), session.getId());
-            return (num > 0) ? true : false;
-        } catch (DataAccessException e) {
-            throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_UPDATE, e);
+    public boolean updateSession(final List<Session> sessions) throws DatabaseException {
+        if (sessions != null) {
+
+            try {
+                int[] num = jdbc.batchUpdate(SQL_UPDATE, new BatchPreparedStatementSetter() {
+
+                    public int getBatchSize() {
+                        return sessions.size();
+                    }
+
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        Session session = sessions.get(i);
+
+                        ps.setLong(1, session.getUserId());
+                        ps.setString(2, session.getIp());
+                        ps.setString(3, session.getUserAgent());
+                        ps.setBoolean(4, session.isDisabled());
+                        ps.setLong(5, session.getId());
+                    }
+                });
+                return (Arrays.stream(num).sum() > 0) ? true : false;
+            } catch (DataAccessException e) {
+                throw new DatabaseException(DatabaseException.STRING_DATA_ACCESS_EXCEPTION + " " + SQL_UPDATE, e);
+            }
+        } else {
+            return false;
         }
+    }
+
+    public boolean updateSession(Session session) throws DatabaseException {
+        List<Session> list = new ArrayList<Session>();
+        list.add(session);
+
+        return updateSession(list);
     }
 
 }
