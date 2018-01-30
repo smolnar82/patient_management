@@ -13,7 +13,9 @@ import hu.kuncystem.patient.webapp.login.LoginController;
 import hu.kuncystem.patient.webapp.login.LoginService;
 
 /**
- * this for comment of classes
+ * This is an default web security config. We use this to the authentication and
+ * we handle the login form. We get the user and password from the database. The
+ * password was crypted with BCrypt algorithm.
  *
  * @author Csaba Kun <kuncy88@gmail.com>
  * @date 2018. jan. 22.
@@ -32,9 +34,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(authenticationProvider());
     }
 
+    /**
+     * Set authentication provider which use the LoginService object. The
+     * LoginService will define the user from the database.
+     */
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        // set service
         authenticationProvider.setUserDetailsService(loginService);
+        // set password encoder
         authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder(10));
         return authenticationProvider;
     }

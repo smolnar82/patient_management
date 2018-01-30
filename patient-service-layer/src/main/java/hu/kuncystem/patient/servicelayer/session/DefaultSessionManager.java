@@ -119,6 +119,7 @@ public class DefaultSessionManager implements SessionManager {
                 }
                 return ok;
             } catch (DatabaseException e) {
+                e.printStackTrace();
                 return false;
             }
         }

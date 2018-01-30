@@ -77,10 +77,10 @@ public class LoginController {
                             request.getHeader("User-Agent"));
                 } catch (Exception e) {     //session create error
                     redirect = "logout?type=" + MESSAGE_TYPE_ERROR_SESSION;
+                    e.printStackTrace();
                 }
             } else {                        //destroy error
-                redirect = "logout?type=" + MESSAGE_TYPE_ERROR_SESSION;
-            }
+                redirect = "logout?type=" + MESSAGE_TYPE_ERROR_SESSION;            }
         } else {                            //user not found
             redirect = "logout?type=" + MESSAGE_TYPE_ERROR_SESSIONUSER;
         }
@@ -121,15 +121,14 @@ public class LoginController {
                     case MESSAGE_TYPE_LOGIN_ERROR: {    //bad user data
                         text = messageSource.getMessage("message.bad_auth_data", null, LocaleContextHolder.getLocale());
 
-                        cls = "error";
+                        cls = "danger";
                         break;
                     }
                     case MESSAGE_TYPE_ERROR_SESSION:    //session create error
                     case MESSAGE_TYPE_ERROR_SESSIONUSER: {
                         text = messageSource.getMessage("message.login_session_error", null,
                                 LocaleContextHolder.getLocale());
-
-                        cls = "error";
+                        cls = "danger";
                         break;
                     }
                 }

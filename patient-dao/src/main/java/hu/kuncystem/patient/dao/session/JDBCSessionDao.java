@@ -48,6 +48,7 @@ public class JDBCSessionDao implements SessionDao {
             Session s = new Session(rs.getLong("user_id"), rs.getString("ip"));
             s.setUserAgent(rs.getString("user_agent"));
             s.setDisabled(rs.getBoolean("disabled"));
+            s.setId(rs.getLong("id"));
 
             return s;
         }
@@ -116,7 +117,6 @@ public class JDBCSessionDao implements SessionDao {
 
     public boolean updateSession(final List<Session> sessions) throws DatabaseException {
         if (sessions != null) {
-
             try {
                 int[] num = jdbc.batchUpdate(SQL_UPDATE, new BatchPreparedStatementSetter() {
 
@@ -126,7 +126,7 @@ public class JDBCSessionDao implements SessionDao {
 
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         Session session = sessions.get(i);
-
+                        
                         ps.setLong(1, session.getUserId());
                         ps.setString(2, session.getIp());
                         ps.setString(3, session.getUserAgent());
