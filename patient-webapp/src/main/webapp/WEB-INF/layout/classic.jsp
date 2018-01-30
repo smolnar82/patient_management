@@ -26,6 +26,8 @@
 
 </head>
 <body>
+	<tiles:insertAttribute name="navbar" />
+	
 	<div class="container-fluid">
 		<tiles:insertAttribute name="body" />
 	</div>

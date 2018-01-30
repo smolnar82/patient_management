@@ -55,5 +55,7 @@
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>
         </bean>
+        
+        <bean id="loggedInterceptor" class="hu.kuncystem.patient.webapp.component.LoggedInterceptor"/>
     </mvc:interceptors>
 </beans>
