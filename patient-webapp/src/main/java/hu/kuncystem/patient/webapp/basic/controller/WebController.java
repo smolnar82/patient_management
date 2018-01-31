@@ -6,6 +6,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -45,5 +46,21 @@ public class WebController {
             model.put("cls", cls);
         }
         return "message";
+    }
+    
+    /**
+     * This is the start page
+     */
+    @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
+    public String index() {
+        return "index";
+    }
+    
+    /**
+     * This is an description about the software.
+     * */
+    @RequestMapping(value = "/about", method = RequestMethod.GET)
+    public String about() {
+        return "about";
     }
 }

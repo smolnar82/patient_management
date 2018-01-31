@@ -14,7 +14,8 @@ import hu.kuncystem.patient.pojo.user.User;
 import hu.kuncystem.patient.servicelayer.user.UserManager;
 
 /**
- * this for comment of classes
+ * This is an interceptor class. This class run each time when it happend an request and set default user data.
+ * These data use in the html code.
  *
  * @author Csaba Kun <kuncy88@gmail.com>
  * @date 2018. jan. 30.

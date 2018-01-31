@@ -10,12 +10,12 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 	      	</button>
-			<a class="navbar-brand" href="#">PM Soft</a>
+			<a class="navbar-brand" href="/">PM Soft</a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="#"><spring:message code="navbar.menu.mycalendar"/> </a></li>
-				<li><a href="#"><spring:message code="navbar.menu.usermanager"/> </a></li>
+				<li><a href="/mycalendar"><spring:message code="navbar.menu.mycalendar"/> </a></li>
+				<li><a href="/usermanager"><spring:message code="navbar.menu.usermanager"/> </a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
@@ -25,8 +25,8 @@
           				<span class="caret"></span>
           			</a>
 		        	<ul class="dropdown-menu">
-			            <li><a href="#"><spring:message code="navbar.menu.myaccount"/></a></li>
-			            <li><a href="#"><spring:message code="navbar.menu.about"/></a></li>
+			            <li><a href="/myaccount"><spring:message code="navbar.menu.myaccount"/></a></li>
+			            <li><a href="/about"><spring:message code="navbar.menu.about"/></a></li>
 			            <li role="separator" class="divider"></li>
 			            <li><a href="/logout"><spring:message code="navbar.menu.logout"/></a></li>
 		          	</ul>

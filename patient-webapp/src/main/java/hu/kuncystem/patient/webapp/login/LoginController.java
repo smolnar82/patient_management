@@ -48,14 +48,6 @@ public class LoginController {
     private UserManager userManager;
 
     /**
-     * This is the start page
-     */
-    @RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
-    public String index() {
-        return "index";
-    }
-
-    /**
      * We can run extra process if the login was success.
      * 
      * @param redirect

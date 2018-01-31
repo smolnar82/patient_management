@@ -51,8 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/login").permitAll();
         http.authorizeRequests().antMatchers("/", "/index")
-                .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')").and().formLogin()
-                .loginPage("/login").loginProcessingUrl("/j_spring_security_check")
+            .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')");
+        http.authorizeRequests().antMatchers("/usermanager")
+            .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR')");
+        http.authorizeRequests().antMatchers("/mycalendar")
+            .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')");
+        http.authorizeRequests().antMatchers("/about")
+            .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')");
+        http.authorizeRequests().antMatchers("/myaccount")
+            .access("hasRole('ROLE_ADMIN') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_PATIENT')");
+        
+        http.formLogin().loginPage("/login").loginProcessingUrl("/j_spring_security_check")
                 .failureUrl("/login?type=" + LoginController.MESSAGE_TYPE_LOGIN_ERROR)
                 .defaultSuccessUrl("/loginSuccess?redirect=index", true).usernameParameter("username")
                 .passwordParameter("password").and().logout()
