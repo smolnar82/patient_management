@@ -6,6 +6,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -19,6 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import hu.kuncystem.patient.dao.H2Config;
 import hu.kuncystem.patient.pojo.session.Session;
+import hu.kuncystem.patient.pojo.user.User;
+import hu.kuncystem.patient.pojo.user.UserFactory;
 
 /**
  * This is a class for session dao test
@@ -69,5 +73,15 @@ public class SessionDaoTest {
     public void stage4_schouldGetSessionDataWhenSessionExsitsById() {
         session = sessionDao.getSession(session.getId());
         assertEquals("127.0.0.1", session.getIp());
+    }
+
+    @Test
+    public void stage5_schouldGetSessionDataWhenSessionExsitsByUserId() {
+        UserFactory factory = new UserFactory();
+        User user = factory.getUser(UserFactory.DEFAULT);
+        user.setId(1);
+
+        List<Session> sessionList = sessionDao.getSession(user, true);
+        assertTrue(sessionList.size() > 0);
     }
 }

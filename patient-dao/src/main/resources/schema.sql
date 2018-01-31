@@ -52,7 +52,7 @@ CREATE TABLE session_list (
   ip VARCHAR(45)   NOT NULL ,
   user_agent VARCHAR(200)    ,
   disabled BOOL    ,
-  created_date TIMESTAMP      ,
+  created_date TIMESTAMP DEFAULT NOW() NOT NULL   ,
 PRIMARY KEY(id)  ,
   FOREIGN KEY(user_id)
     REFERENCES users(id));

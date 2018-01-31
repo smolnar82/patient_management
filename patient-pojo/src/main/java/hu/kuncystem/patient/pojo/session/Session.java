@@ -96,7 +96,7 @@ public class Session {
      * Set that the session is enabled or not.
      *
      * @param disabled
-     *            true: session is enabled, false: session is disabled
+     *            true: session is disabled, false: session is enabled
      */
     public void setDisabled(boolean disabled) {
         this.disable = disabled;

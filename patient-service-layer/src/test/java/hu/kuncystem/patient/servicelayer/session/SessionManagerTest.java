@@ -90,12 +90,17 @@ public class SessionManagerTest {
     public void stage6_schouldDestroySessionUnSuccessfullyBecauseSessionDidNotExsist() {
         try {
             if (sessionManager.destroy()) {
-                fail("The session exists still!");
+                fail("The session still exists!");
             } else {
                 assertTrue(true);
             }
         } catch (SessionNotExistsException e) {
             assertTrue(true);
         }
+    }
+
+    @Test
+    public void stage7_schouldDestroyAllActiveSession() {
+        assertTrue(sessionManager.destroyAllActiveSession(user.getId()));
     }
 }
